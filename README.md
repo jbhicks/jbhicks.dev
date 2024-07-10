@@ -1,2 +1,2 @@
 # jbhicks.dev
-Projects home
+Home for my weird side projects and maybe a resume some day.
