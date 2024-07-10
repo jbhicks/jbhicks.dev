@@ -31,8 +31,8 @@ func Home(routes []chi.Route) g.Node {
 
 func NiceButton(text string, primary bool) g.Node {
 	return Button(g.Text(text), c.Classes{
-		"flex items-center justify-center px-4 py-3 rounded-md": true,
-		"text-white bg-indigo-600 hover:bg-indigo-700":          primary,
-		"text-indigo-600 bg-gray-50 hover:bg-gray-200":          !primary,
+		"btn":           true,
+		"btn-primary":   primary,
+		"btn-secondary": !primary,
 	})
 }

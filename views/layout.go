@@ -18,6 +18,7 @@ func Page(p Props) g.Node {
 		Language: "en",
 		Head: []g.Node{
 			Link(Rel("stylesheet"), Href("/static/styles/app.css"), Type("text/css")),
+			Link(Rel("stylesheet"), Href("https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css"), Type("text/css")),
 		},
 		Body: []g.Node{
 			Nav(Class("bg-gradient-to-br from-blue-700 to-indigo-300 py-2"),
