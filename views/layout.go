@@ -1,6 +1,8 @@
 package views
 
 import (
+	"fmt"
+
 	g "github.com/maragudk/gomponents"
 	c "github.com/maragudk/gomponents/components"
 	. "github.com/maragudk/gomponents/html"
@@ -13,6 +15,7 @@ type Props struct {
 }
 
 func Page(p Props) g.Node {
+	fmt.Println(p.Path)
 	return c.HTML5(c.HTML5Props{
 		Title:    p.Title,
 		Language: "en",
@@ -21,7 +24,7 @@ func Page(p Props) g.Node {
 			Link(Rel("stylesheet"), Href("https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css"), Type("text/css")),
 		},
 		Body: []g.Node{
-			Nav(Class("bg-gradient-to-br from-blue-700 to-indigo-300 py-2"),
+			Nav(Class("navbar bg-base-300 justify-between"),
 				Container(
 					Div(Class("flex items-baseline space-x-4"),
 						NavbarLink("/", "Home", p.Path),

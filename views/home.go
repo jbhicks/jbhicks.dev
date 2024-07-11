@@ -14,17 +14,9 @@ func Home(routes []chi.Route) g.Node {
 			g.Text("Home for my weird side projects and maybe some resume type thing some day."),
 		),
 
-		SubHeadline("Routes declared in this app"),
-		Ul(
-			g.Map(len(routes), func(i int) g.Node {
-				return Li(g.Text(routes[i].Pattern))
-			})...,
-		),
-
 		SubHeadline("Buttons 😎"),
 		Div(Class("max-w-lg flex space-x-8"),
-			NiceButton("Click me!", true),
-			NiceButton("Please don't click me…", false),
+			Button(g.Text("Click me"), Class("btn btn-primary btn-sm")),
 		),
 	)
 }
@@ -32,6 +24,7 @@ func Home(routes []chi.Route) g.Node {
 func NiceButton(text string, primary bool) g.Node {
 	return Button(g.Text(text), c.Classes{
 		"btn":           true,
+		"btn-sm":        true,
 		"btn-primary":   primary,
 		"btn-secondary": !primary,
 	})
