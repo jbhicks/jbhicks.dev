@@ -9,14 +9,14 @@ import (
 
 func Home(routes []chi.Route) g.Node {
 	return Div(
-		Headline("Welcome to jbhicks.dev! 🎉"),
+		Headline("jbhicks.dev"),
 		P(
-			g.Text("Home for my weird side projects and maybe some resume type thing some day."),
+			g.Text("text goes here bitch yeah"),
 		),
 
-		SubHeadline("Buttons 😎"),
+		SubHeadline("Buttons suck"),
 		Div(Class("max-w-lg flex space-x-8"),
-			Button(g.Text("Click me"), Class("btn btn-primary btn-sm")),
+			Button(g.Text("Click me now"), Class("btn btn-primary btn-sm")),
 		),
 	)
 }
