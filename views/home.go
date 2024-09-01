@@ -11,10 +11,10 @@ func Home(routes []chi.Route) g.Node {
 	return Div(
 		Headline("jbhicks.dev"),
 		P(
-			g.Text("text goes here bitch yeah"),
+			g.Text("text goes here"),
 		),
 
-		SubHeadline("Buttons suck"),
+		SubHeadline("Mixes"),
 		Div(Class("max-w-lg flex space-x-8"),
 			Button(g.Text("Click me now"), Class("btn btn-primary btn-sm")),
 		),
