@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/jbhicks/jbhicks.dev/views"
@@ -16,5 +17,10 @@ func Home(mux chi.Router) {
 			Path:    "/",
 			Content: views.Home(routes),
 		}).Render(w)
+	})
+
+	mux.Post("/", func(w http.ResponseWriter, r *http.Request) {
+		now := time.Now()
+		_ = views.Partial(now).Render(w)
 	})
 }

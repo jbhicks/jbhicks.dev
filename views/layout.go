@@ -22,6 +22,7 @@ func Page(p Props) g.Node {
 		Head: []g.Node{
 			Link(Rel("stylesheet"), Href("/static/styles/app.css"), Type("text/css")),
 			Link(Rel("stylesheet"), Href("https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css"), Type("text/css")),
+			Script(Src("https://unpkg.com/htmx.org"), Defer()),
 		},
 		Body: []g.Node{
 			Nav(Class("navbar bg-base-300 justify-between"),
