@@ -38,14 +38,14 @@ func GetStream(mux chi.Router) {
 		}
 
 		if err := json.NewEncoder(w).Encode(map[string]interface{}{
-			"tracks": fetchSoundCloudStream(offsetInt, limitInt),
+			"tracks": FetchSoundCloudStream(offsetInt, limitInt),
 		}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})
 }
 
-func fetchSoundCloudStream(offset int, limit int) string {
+func FetchSoundCloudStream(offset int, limit int) string {
 	authorization := os.Getenv("sc_auth_token")
 	sc_a_id := os.Getenv("sc_a_id")
 	sc_client_id := os.Getenv("sc_client_id")
@@ -129,4 +129,85 @@ func PrettyPrint(data ...interface{}) {
 		}
 		fmt.Println(string(prettyJSON))
 	}
+}
+
+type SoundCloudResponse struct {
+	Tracks string `json:"tracks"`
+}
+
+type TracksResponse struct {
+	Collection []TrackItem `json:"collection"`
+	NextHref   string      `json:"next_href"`
+	QueryUrn   *string     `json:"query_urn"`
+}
+
+type TrackItem struct {
+	CreatedAt string    `json:"created_at"`
+	Type      string    `json:"type"`
+	User      User      `json:"user"`
+	UUID      string    `json:"uuid"`
+	Caption   *string   `json:"caption"`
+	Reposted  *Reposted `json:"reposted,omitempty"`
+	Playlist  *Playlist `json:"playlist,omitempty"`
+	Track     *Track    `json:"track,omitempty"`
+}
+
+type User struct {
+	AvatarURL        string  `json:"avatar_url"`
+	FirstName        string  `json:"first_name"`
+	FollowersCount   int     `json:"followers_count"`
+	FullName         string  `json:"full_name"`
+	ID               int     `json:"id"`
+	Kind             string  `json:"kind"`
+	LastModified     string  `json:"last_modified"`
+	LastName         string  `json:"last_name"`
+	Permalink        string  `json:"permalink"`
+	PermalinkURL     string  `json:"permalink_url"`
+	URI              string  `json:"uri"`
+	URN              string  `json:"urn"`
+	Username         string  `json:"username"`
+	Verified         bool    `json:"verified"`
+	City             string  `json:"city"`
+	CountryCode      *string `json:"country_code"`
+	Badges           Badges  `json:"badges"`
+	StationUrn       string  `json:"station_urn"`
+	StationPermalink string  `json:"station_permalink"`
+}
+
+type Badges struct {
+	Pro            bool `json:"pro"`
+	CreatorMidTier bool `json:"creator_mid_tier"`
+	ProUnlimited   bool `json:"pro_unlimited"`
+	Verified       bool `json:"verified"`
+}
+
+type Reposted struct {
+	TargetUrn string  `json:"target_urn"`
+	UserUrn   string  `json:"user_urn"`
+	Caption   *string `json:"caption"`
+}
+
+type Playlist struct {
+	// Add playlist fields as needed
+}
+
+type Track struct {
+	ArtworkURL       string  `json:"artwork_url"`
+	Caption          *string `json:"caption"`
+	Commentable      bool    `json:"commentable"`
+	CommentCount     int     `json:"comment_count"`
+	CreatedAt        string  `json:"created_at"`
+	Description      string  `json:"description"`
+	Downloadable     bool    `json:"downloadable"`
+	DownloadCount    int     `json:"download_count"`
+	Duration         int     `json:"duration"`
+	FullDuration     int     `json:"full_duration"`
+	EmbeddableBy     string  `json:"embeddable_by"`
+	Genre            string  `json:"genre"`
+	HasDownloadsLeft bool    `json:"has_downloads_left"`
+	ID               int     `json:"id"`
+	Kind             string  `json:"kind"`
+	LabelName        *string `json:"label_name"`
+	LastModified     string  `json:"last_modified"`
+	License          string  `json:"license"`
 }
