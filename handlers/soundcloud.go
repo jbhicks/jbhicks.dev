@@ -11,16 +11,10 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/joho/godotenv"
 )
 
 func GetStream(mux chi.Router) {
 	mux.Get("/soundcloud/stream", func(w http.ResponseWriter, r *http.Request) {
-		err := godotenv.Load()
-		if err != nil {
-			log.Fatal("Error loading .env file")
-		}
-
 		offset := r.URL.Query().Get("offset")
 		limit := r.URL.Query().Get("limit")
 
@@ -52,9 +46,20 @@ func GetStream(mux chi.Router) {
 }
 
 func fetchSoundCloudStream(offset int, limit int) string {
-	authorization := os.Getenv("SOUNDCLOUD_OAUTH_TOKEN")
-	sc_a_id := os.Getenv("SOUNDCLOUD_SC_A_ID")
-	sc_client_id := os.Getenv("SOUNDCLOUD_CLIENT_ID")
+	authorization := os.Getenv("sc_auth_token")
+	sc_a_id := os.Getenv("sc_a_id")
+	sc_client_id := os.Getenv("sc_client_id")
+
+	if authorization == "" {
+		fmt.Println("Warning: sc_auth_token is blank")
+	}
+	if sc_a_id == "" {
+		fmt.Println("Warning: sc_a_id is blank")
+	}
+	if sc_client_id == "" {
+		fmt.Println("Warning: sc_client_id is blank")
+	}
+
 	url := fmt.Sprintf("https://api-v2.soundcloud.com/stream?offset=%d&sc_a_id=%s&limit=%d&promoted_playlist=true&client_id=%s&app_version=1660231961&app_locale=en", offset, sc_a_id, limit, sc_client_id)
 	fmt.Println("Authorization:", authorization)
 	headers := map[string]string{
@@ -111,9 +116,6 @@ func fetchSoundCloudStream(offset int, limit int) string {
 		log.Printf("Error reading response body: %v", err)
 		return ""
 	}
-
-	// Uncomment this line to see the response body (for debugging purposes)
-	// fmt.Println("Response body:", string(body))
 
 	return string(body)
 }
