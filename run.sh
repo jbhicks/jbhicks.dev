@@ -11,7 +11,7 @@ trap cleanup SIGINT
 
 # Start the Go server in the background
 echo "Starting Go server..."
-wgo -file=.go go run main.go &
+air &
 
 # Start Browser-Sync in the background
 echo "Starting Browser-Sync..."

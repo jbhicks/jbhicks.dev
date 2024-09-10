@@ -29,9 +29,9 @@ func Home(routes []chi.Route) g.Node {
 			H1(g.Text(`gomponents + HTMX`)),
 			P(g.Textf(`Time at last full page refresh was %v.`, now.Format(timeFormat))),
 			Partial(now),
-			FormEl(Method("post"), Action("/"), hx.Boost("true"), hx.Target("#partial"), hx.Swap("outerHTML"),
-				Button(Type("submit"), g.Text(`Update time`),
-					Class("rounded-md border border-transparent bg-orange-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"),
+			FormEl(Method("get"), Action("/soundcloud/stream?offset=1&limit=100"), hx.Boost("true"), hx.Target("#partial"), hx.Swap("outerHTML"),
+				Button(Type("submit"), g.Text(`Get soundcloud stream`),
+					Class("btn btn-primary btn-sm"),
 				),
 			),
 		))

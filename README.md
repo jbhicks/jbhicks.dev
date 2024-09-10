@@ -3,7 +3,7 @@
 Home for my weird side projects and maybe a resume some day.
 
 run:
-Prerequisites are wgo and browser-sync:
+Prerequisites are air and browser-sync:
 
 ``` bash
 
