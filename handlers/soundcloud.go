@@ -25,17 +25,8 @@ func GetStream(mux chi.Router) {
 			limit = "100"
 		}
 
-		offsetInt, err := strconv.Atoi(offset)
-		if err != nil {
-			http.Error(w, "Invalid offset parameter", http.StatusBadRequest)
-			return
-		}
-
-		limitInt, err := strconv.Atoi(limit)
-		if err != nil {
-			http.Error(w, "Invalid limit parameter", http.StatusBadRequest)
-			return
-		}
+		offsetInt, _ := strconv.Atoi(offset)
+		limitInt, _ := strconv.Atoi(limit)
 
 		if err := json.NewEncoder(w).Encode(map[string]interface{}{
 			"tracks": FetchSoundCloudStream(offsetInt, limitInt),

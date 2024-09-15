@@ -22,9 +22,6 @@ func Home(routes []chi.Route) g.Node {
 		),
 
 		SubHeadline("Mixes"),
-		Div(Class("max-w-lg flex space-x-8"),
-			Button(g.Text("Click me now"), Class("btn btn-primary btn-sm")),
-		),
 		Div(Class("max-w-7xl mx-auto p-4 prose lg:prose-lg xl:prose-xl"),
 			H1(g.Text(`gomponents + HTMX`)),
 			P(g.Textf(`Time at last full page refresh was %v.`, now.Format(timeFormat))),
