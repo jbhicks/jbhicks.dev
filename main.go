@@ -1,25 +1,34 @@
 package main
 
 import (
-	"log"
-	"os"
+	"net/http"
 
-	// "github.com/jbhicks/jbhicks.dev/db"
-	"github.com/jbhicks/jbhicks.dev/server"
+	"github.com/gin-gonic/gin"
 )
 
-func main() {
-	logger := log.New(os.Stdout, "", 0)
-	// db.InitDB()
-	// defer db.DB.Close()
+var db = make(map[string]string)
 
-	s := server.New(server.Options{
-		Host: "localhost",
-		Log:  logger,
-		Port: 8080,
+func setupRouter() *gin.Engine {
+	// Disable Console Color
+	// gin.DisableConsoleColor()
+	r := gin.Default()
+	r.LoadHTMLGlob("templates/*")
+
+	// Ping test
+	r.GET("/ping", func(c *gin.Context) {
+		c.String(http.StatusOK, "pong")
 	})
 
-	if err := s.Start(); err != nil {
-		logger.Fatalln("Error starting server:", err)
-	}
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", gin.H{
+			"title": "Main website",
+		})
+	})
+	return r
+}
+
+func main() {
+	r := setupRouter()
+	// Listen and Server in 0.0.0.0:8080
+	r.Run(":3000")
 }
