@@ -10,12 +10,14 @@ import (
 	"os"
 	"strconv"
 
+	"html/template"
+
 	"github.com/gin-gonic/gin"
 )
 
 func GetStream(c *gin.Context) {
 	offset := c.DefaultQuery("offset", "1")
-	limit := c.DefaultQuery("limit", "100")
+	limit := c.DefaultQuery("limit", "20")
 
 	offsetInt, err := strconv.Atoi(offset)
 	if err != nil {
@@ -30,11 +32,18 @@ func GetStream(c *gin.Context) {
 	}
 
 	// Fetch the stream based on offset and limit
+	// Fetch the stream based on offset and limit
 	tracks := FetchSoundCloudStream(offsetInt, limitInt)
-	c.JSON(http.StatusOK, map[string]interface{}{"tracks": tracks})
+	PrettyPrint(tracks.Collection[0])
+	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
+	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", tracks); err != nil {
+		// If there's an error executing the template (which shouldn't happen if you parse only one template), log and handle it appropriately
+		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
+	}
+
 }
 
-func FetchSoundCloudStream(offset int, limit int) string {
+func FetchSoundCloudStream(offset int, limit int) TracksResponse {
 	authorization := os.Getenv("sc_auth_token")
 	sc_a_id := os.Getenv("sc_a_id")
 	sc_client_id := os.Getenv("sc_client_id")
@@ -73,7 +82,6 @@ func FetchSoundCloudStream(offset int, limit int) string {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Printf("Error creating request: %v", err)
-		return ""
 	}
 
 	for key, value := range headers {
@@ -83,7 +91,6 @@ func FetchSoundCloudStream(offset int, limit int) string {
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Printf("Error making request: %v", err)
-		return ""
 	}
 	defer resp.Body.Close()
 
@@ -93,7 +100,6 @@ func FetchSoundCloudStream(offset int, limit int) string {
 		reader, err = gzip.NewReader(resp.Body)
 		if err != nil {
 			log.Printf("Error creating gzip reader: %v", err)
-			return ""
 		}
 		defer reader.Close()
 	default:
@@ -103,10 +109,14 @@ func FetchSoundCloudStream(offset int, limit int) string {
 	body, err := io.ReadAll(reader)
 	if err != nil {
 		log.Printf("Error reading response body: %v", err)
-		return ""
 	}
 
-	return string(body)
+	var tracksResponse TracksResponse
+	err = json.Unmarshal(body, &tracksResponse)
+	if err != nil {
+		log.Printf("Error unmarshalling response: %v", err)
+	}
+	return tracksResponse
 }
 
 func PrettyPrint(data ...interface{}) {
