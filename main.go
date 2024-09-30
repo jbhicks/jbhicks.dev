@@ -4,19 +4,16 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jbhicks/jbhicks.dev/handlers" // Use the full package path
 )
 
-var db = make(map[string]string)
-
 func setupRouter() *gin.Engine {
-	// Disable Console Color
-	// gin.DisableConsoleColor()
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/*")
 
-	// Ping test
-	r.GET("/ping", func(c *gin.Context) {
-		c.String(http.StatusOK, "pong")
+	// Health check
+	r.GET("/health", func(c *gin.Context) {
+		c.String(http.StatusOK, "OK")
 	})
 
 	r.GET("/", func(c *gin.Context) {
@@ -24,11 +21,15 @@ func setupRouter() *gin.Engine {
 			"title": "Main website",
 		})
 	})
+
+	r.GET("/api/soundcloud/stream", handlers.GetStream)
+
+	r.Static("/static", "./static")
+
 	return r
 }
 
 func main() {
 	r := setupRouter()
-	// Listen and Server in 0.0.0.0:8080
 	r.Run(":3000")
 }
