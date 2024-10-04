@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -7,9 +6,14 @@
 </head>
 
 <body>
-    <h1>Tracks:</h1>
-    <!-- Display the entire tracks object as JSON -->
-    <pre>{{.Collection | printf "%s"}}</pre>
+    <h1>Mixes</h1>
+    {{range $index, $item := .Collection}}
+    <li>{{$item.User.Username}} - {{$item.Type}}</li>
+    {{end}}
+    <ul>
+
+
 </body>
+
 
 </html>
