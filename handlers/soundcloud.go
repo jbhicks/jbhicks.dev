@@ -17,7 +17,7 @@ import (
 
 func GetStream(c *gin.Context) {
 	offset := c.DefaultQuery("offset", "1")
-	limit := c.DefaultQuery("limit", "20")
+	limit := c.DefaultQuery("limit", "100")
 
 	offsetInt, err := strconv.Atoi(offset)
 	if err != nil {
