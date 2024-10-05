@@ -31,16 +31,15 @@ func GetStream(c *gin.Context) {
 		return
 	}
 
-	// Fetch the stream based on offset and limit
-	// Fetch the stream based on offset and limit
 	tracks := FetchSoundCloudStream(offsetInt, limitInt)
+
 	PrettyPrint(tracks.Collection[0])
 	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
 	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", tracks); err != nil {
 		// If there's an error executing the template (which shouldn't happen if you parse only one template), log and handle it appropriately
 		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
-	}
 
+	}
 }
 
 func FetchSoundCloudStream(offset int, limit int) TracksResponse {

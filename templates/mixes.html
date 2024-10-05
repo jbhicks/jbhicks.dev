@@ -8,7 +8,7 @@
 <body>
     <h1>Mixes</h1>
     {{range $index, $item := .Collection}}
-    <li>{{$item.User.Username}} - {{$item.Type}}</li>
+    <li>{{$item.User.Username}} - {{$item.Type}} - {{$item.Track.Duration}}</li>
     {{end}}
     <ul>
 
