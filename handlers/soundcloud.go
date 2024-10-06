@@ -23,11 +23,20 @@ var cacheMap sync.Map
 func HandleGetSoundcloudStream(c *gin.Context) {
 	fmt.Println("[GET]SoundcloudStream")
 	mixes, err := getCachedMixes(key)
+
 	if err != nil {
 		log.Println("Error while fetching mixes from cache, loading fresh...", err)
 		LoadCache()
 		mixes, _ = getCachedMixes(key)
 	}
+
+	if time.Since(mixes.LastUpdated).Hours() >= 1 {
+		log.Println("More than 1 hour has passed, loading cache")
+		LoadCache()
+		mixes, _ = getCachedMixes(key)
+	}
+
+	c.Writer.Header().Set("Content-Type", "text/html")
 	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
 	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", mixes); err != nil {
 		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
@@ -37,16 +46,13 @@ func HandleGetSoundcloudStream(c *gin.Context) {
 func LoadCache() {
 	offset := 0
 	limit := 100
-
 	var mixes TracksResponse
 
 	for len(mixes.Collection) < 100 {
 		fetchedTracks := FetchSoundCloudStream(offset, limit)
 		filteredTracks := filterTracks(&fetchedTracks)
 		mixes.Collection = append(mixes.Collection, filteredTracks.Collection...)
-		// Increment the offset for the next request
 		offset += limit
-		log.Println("[DEBUG]Offset:", offset)
 	}
 
 	mixes.LastUpdated = time.Now()
