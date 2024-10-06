@@ -22,10 +22,11 @@ var cacheMap sync.Map
 
 func HandleGetSoundcloudStream(c *gin.Context) {
 	fmt.Println("[GET]SoundcloudStream")
-	LoadCache()
 	mixes, err := getCachedMixes(key)
 	if err != nil {
-		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
+		log.Println("Error while fetching mixes from cache, loading fresh...", err)
+		LoadCache()
+		mixes, _ = getCachedMixes(key)
 	}
 	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
 	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", mixes); err != nil {
