@@ -15,9 +15,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var cache = make(map[string]TracksResponse)
+
 func HandleGetSoundcloudStream(c *gin.Context) {
 	offset := c.DefaultQuery("offset", "0")
-	limit := c.DefaultQuery("limit", "10")
+	limit := c.DefaultQuery("limit", "100")
 
 	offsetInt, _ := strconv.Atoi(offset)
 	limitInt, _ := strconv.Atoi(limit)
