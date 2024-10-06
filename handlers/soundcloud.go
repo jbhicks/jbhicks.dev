@@ -15,31 +15,42 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetStream(c *gin.Context) {
-	offset := c.DefaultQuery("offset", "1")
-	limit := c.DefaultQuery("limit", "100")
+func HandleGetSoundcloudStream(c *gin.Context) {
+	offset := c.DefaultQuery("offset", "0")
+	limit := c.DefaultQuery("limit", "10")
 
-	offsetInt, err := strconv.Atoi(offset)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid offset"})
-		return
+	offsetInt, _ := strconv.Atoi(offset)
+	limitInt, _ := strconv.Atoi(limit)
+
+	var mixes TracksResponse
+
+	for len(mixes.Collection) < 100 {
+		fetchedTracks := FetchSoundCloudStream(offsetInt, limitInt)
+		filteredTracks := filterTracks(&fetchedTracks)
+		mixes.Collection = append(mixes.Collection, filteredTracks.Collection...)
+		// Increment the offset for the next request
+		offsetInt += limitInt
 	}
 
-	limitInt, err := strconv.Atoi(limit)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid limit"})
-		return
-	}
-
-	tracks := FetchSoundCloudStream(offsetInt, limitInt)
-
-	PrettyPrint(tracks.Collection[0])
 	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
-	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", tracks); err != nil {
+	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", mixes); err != nil {
 		// If there's an error executing the template (which shouldn't happen if you parse only one template), log and handle it appropriately
 		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
-
 	}
+}
+
+func filterTracks(tracks *TracksResponse) TracksResponse {
+	var filteredTracks TracksResponse
+	for _, track := range tracks.Collection {
+		if track.Track != nil && track.Track.Duration > 1750000 { // check duration greater than ~30m
+			filteredTracks.Collection = append(filteredTracks.Collection, track)
+		} else if track.Track == nil {
+			fmt.Println("Missing Track information", track)
+		} else if track.Track.Duration <= 0 {
+			fmt.Println("Invalid Duration for track", track)
+		}
+	}
+	return filteredTracks
 }
 
 func FetchSoundCloudStream(offset int, limit int) TracksResponse {
@@ -58,7 +69,6 @@ func FetchSoundCloudStream(offset int, limit int) TracksResponse {
 	}
 
 	url := fmt.Sprintf("https://api-v2.soundcloud.com/stream?offset=%d&sc_a_id=%s&limit=%d&promoted_playlist=true&client_id=%s&app_version=1660231961&app_locale=en", offset, sc_a_id, limit, sc_client_id)
-	fmt.Println("Authorization:", authorization)
 	headers := map[string]string{
 		"Accept":             "application/json, text/javascript, */*; q=0.01",
 		"Accept-Encoding":    "gzip, deflate, br",
