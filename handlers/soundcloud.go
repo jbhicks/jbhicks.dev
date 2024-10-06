@@ -3,42 +3,72 @@ package handlers
 import (
 	"compress/gzip"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
-	"strconv"
+	"sync"
+	"time"
 
 	"html/template"
 
 	"github.com/gin-gonic/gin"
 )
 
-var cache = make(map[string]TracksResponse)
+var key = "soundcloud-stream"
+var cacheMap sync.Map
 
 func HandleGetSoundcloudStream(c *gin.Context) {
-	offset := c.DefaultQuery("offset", "0")
-	limit := c.DefaultQuery("limit", "100")
+	fmt.Println("[GET]SoundcloudStream")
+	LoadCache()
+	mixes, err := getCachedMixes(key)
+	if err != nil {
+		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
+	}
+	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
+	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", mixes); err != nil {
+		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
+	}
+}
 
-	offsetInt, _ := strconv.Atoi(offset)
-	limitInt, _ := strconv.Atoi(limit)
+func LoadCache() {
+	offset := 0
+	limit := 100
 
 	var mixes TracksResponse
 
 	for len(mixes.Collection) < 100 {
-		fetchedTracks := FetchSoundCloudStream(offsetInt, limitInt)
+		fetchedTracks := FetchSoundCloudStream(offset, limit)
 		filteredTracks := filterTracks(&fetchedTracks)
 		mixes.Collection = append(mixes.Collection, filteredTracks.Collection...)
 		// Increment the offset for the next request
-		offsetInt += limitInt
+		offset += limit
+		log.Println("[DEBUG]Offset:", offset)
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
-	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", mixes); err != nil {
-		// If there's an error executing the template (which shouldn't happen if you parse only one template), log and handle it appropriately
-		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
+	mixes.LastUpdated = time.Now()
+	storeCachedResponse(&mixes, key)
+}
+
+func storeCachedResponse(mixes *TracksResponse, key string) {
+	if mixes == nil {
+		mixes = &TracksResponse{}
 	}
+	cacheMap.Store(key, mixes)
+}
+
+func getCachedMixes(key string) (*TracksResponse, error) {
+	var cachedResponse *TracksResponse
+
+	value, ok := cacheMap.Load(key)
+	if !ok {
+		return nil, errors.New("cache miss")
+	}
+	cachedResponse = value.(*TracksResponse)
+
+	return cachedResponse, nil // successfully retrieved the mix from cache
 }
 
 func filterTracks(tracks *TracksResponse) TracksResponse {
@@ -46,10 +76,6 @@ func filterTracks(tracks *TracksResponse) TracksResponse {
 	for _, track := range tracks.Collection {
 		if track.Track != nil && track.Track.Duration > 1750000 { // check duration greater than ~30m
 			filteredTracks.Collection = append(filteredTracks.Collection, track)
-		} else if track.Track == nil {
-			fmt.Println("Missing Track information", track)
-		} else if track.Track.Duration <= 0 {
-			fmt.Println("Invalid Duration for track", track)
 		}
 	}
 	return filteredTracks
@@ -146,9 +172,10 @@ type SoundCloudResponse struct {
 }
 
 type TracksResponse struct {
-	Collection []TrackItem `json:"collection"`
-	NextHref   string      `json:"next_href"`
-	QueryUrn   *string     `json:"query_urn"`
+	Collection  []TrackItem `json:"collection"`
+	NextHref    string      `json:"next_href"`
+	QueryUrn    *string     `json:"query_urn"`
+	LastUpdated time.Time
 }
 
 type TrackItem struct {
