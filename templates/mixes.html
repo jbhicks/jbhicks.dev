@@ -1,19 +1,21 @@
-<!DOCTYPE html>
-
-<head>
-    <meta charset="UTF-8">
-    <title>Mixes</title>
-</head>
-
-<body>
-    <h1>Mixes</h1>
-    {{range $index, $item := .Collection}}
-    <li>{{$item.User.Username}} - {{$item.Type}} - {{$item.Track.Duration}}</li>
-    {{end}}
-    <ul>
-
-
-</body>
-
-
-</html>
+<div class="overflow-x-auto">
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
+        {{range $index, $item := .Collection}}
+        <div class="card card-side m-1 rounded shadow-xl bg-gray-700 bg-opacity-75 flex">
+            <figure class="basis-1/2 p-0 m-0">
+                <img src="{{$item.Track.ArtworkURL}}" alt="Mix" style="height: 100%; object-fit: contain;">
+            </figure>
+            <div class="basis-1/2 ml-4">
+                <h2 class="card-title">
+                    <div class="avatar pt-2">
+                        <div class="ring-primary ring-offset-base-100 w-8 rounded-full ring ring-offset-2">
+                            <img src="{{$item.User.AvatarURL}}" alt="Avatar" class="rounded-full w-8 h-8" />
+                        </div>
+                    </div>
+                    {{$item.User.Username}} - {{$item.Track.Title}}
+                </h2>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+</div>

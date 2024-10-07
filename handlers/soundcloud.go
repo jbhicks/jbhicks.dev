@@ -9,7 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"sync"
+	"strings"
 	"time"
 
 	"html/template"
@@ -18,10 +18,10 @@ import (
 )
 
 var key = "soundcloud-stream"
-var cacheMap sync.Map
 
 func HandleGetSoundcloudStream(c *gin.Context) {
 	fmt.Println("[GET]SoundcloudStream")
+	// LoadCache() // force load on startup - debug
 	mixes, err := getCachedMixes(key)
 
 	if err != nil {
@@ -35,6 +35,8 @@ func HandleGetSoundcloudStream(c *gin.Context) {
 		LoadCache()
 		mixes, _ = getCachedMixes(key)
 	}
+	log.Println("Mixes loaded from cache:")
+	PrettyPrint(mixes.Collection[0])
 
 	c.Writer.Header().Set("Content-Type", "text/html")
 	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
@@ -59,29 +61,51 @@ func LoadCache() {
 	storeCachedResponse(&mixes, key)
 }
 
-func storeCachedResponse(mixes *TracksResponse, key string) {
-	if mixes == nil {
-		mixes = &TracksResponse{}
+func storeCachedResponse(mixes *TracksResponse, key string) error {
+	bytes, err := json.Marshal(mixes)
+	if err != nil {
+		return err
 	}
-	cacheMap.Store(key, mixes)
+
+	file, err := os.Create(key + ".json")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	_, err = file.Write(bytes)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func getCachedMixes(key string) (*TracksResponse, error) {
-	var cachedResponse *TracksResponse
-
-	value, ok := cacheMap.Load(key)
-	if !ok {
+	file, err := os.Open(key + ".json")
+	if err != nil {
 		return nil, errors.New("cache miss")
 	}
-	cachedResponse = value.(*TracksResponse)
+	defer file.Close()
 
-	return cachedResponse, nil // successfully retrieved the mix from cache
+	var cachedResponse TracksResponse
+
+	err = json.NewDecoder(file).Decode(&cachedResponse)
+	if err != nil {
+		return nil, errors.New("failed to read from cache file: " + key + ".json")
+	}
+
+	return &cachedResponse, nil
 }
 
 func filterTracks(tracks *TracksResponse) TracksResponse {
 	var filteredTracks TracksResponse
 	for _, track := range tracks.Collection {
-		if track.Track != nil && track.Track.Duration > 1750000 { // check duration greater than ~30m
+		if track.Track != nil &&
+			track.Track.Duration > 1750000 &&
+			!strings.Contains(track.Type, "playlist") { // check duration greater than ~30m
+
+			log.Printf("%s - %d", track.Track.Title, track.Track.Duration)
 			filteredTracks.Collection = append(filteredTracks.Collection, track)
 		}
 	}
@@ -254,4 +278,5 @@ type Track struct {
 	LabelName        *string `json:"label_name"`
 	LastModified     string  `json:"last_modified"`
 	License          string  `json:"license"`
+	Title            string  `json:"title"`
 }
