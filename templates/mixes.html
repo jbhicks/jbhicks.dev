@@ -8,19 +8,20 @@
 <div class="overflow-x-auto">
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
         {{range $index, $item := .Collection}}
-        <div class="card card-side m-1 rounded shadow-xl bg-gray-700 bg-opacity-75 flex">
-            <figure class="fill-container" style="max-width: 100px;">
-                <img src="{{$item.Track.ArtworkURL}}" alt="Mix" class="w-full h-auto object-cover" />
+        <div class="card card-side m-1 rounded shadow-xl bg-gray-800 bg-opacity-75 flex">
+            <figure class="basis-1/2 p-0 m-0 aspect-ratio">
+                <img src="{{$item.Track.ArtworkURL}}" alt="Mix">
             </figure>
-            <div class="basis-2/3 ml-4">
+            <div class="basis-1/2 ml-4">
                 <h2 class="card-title">
                     <div class="avatar pt-2">
-                        <div class="ring-primary ring-offset-base-100 w-8 rounded-full ring ring-offset-2">
+                        <div class="w-8 rounded-full">
                             <img src="{{$item.User.AvatarURL}}" alt="Avatar" class="rounded-full w-8 h-8" />
                         </div>
                     </div>
-                    {{$item.User.Username}} - {{$item.Track.Title}}
+                    {{$item.User.Username}}
                 </h2>
+            {{$item.Track.Title}}
             </div>
         </div>
         {{ end }}
