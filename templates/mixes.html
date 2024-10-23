@@ -8,22 +8,24 @@
 <div class="overflow-x-auto">
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
         {{range $index, $item := .Collection}}
-        <div class="card card-side m-1 rounded shadow-xl bg-gray-800 bg-opacity-75 flex">
-            <figure class="basis-1/2 p-0 m-0 aspect-ratio">
-                <img src="{{$item.Track.ArtworkURL}}" alt="Mix">
-            </figure>
-            <div class="basis-1/2 ml-4">
-                <h2 class="card-title">
-                    <div class="avatar pt-2">
-                        <div class="w-8 rounded-full">
-                            <img src="{{$item.User.AvatarURL}}" alt="Avatar" class="rounded-full w-8 h-8" />
+        <a href="{{$item.Track.PermalinkURL}}" target="_blank" class="no-underline hover:underline">
+            <div class="card card-side m-1 rounded shadow-xl bg-gray-800 bg-opacity-75 flex">
+                <figure class="basis-1/2 p-0 m-0 aspect-ratio">
+                    <img src="{{$item.Track.ArtworkURL}}" alt="Mix" class="fill-container">
+                </figure>
+                <div class="basis-1/2 ml-4">
+                    <h2 class="card-title">
+                        <div class="avatar pt-2">
+                            <div class="w-8 rounded-full">
+                                <img src="{{$item.User.AvatarURL}}" alt="Avatar" class="rounded-full w-8 h-8" />
+                            </div>
                         </div>
-                    </div>
-                    {{$item.User.Username}}
-                </h2>
-            {{$item.Track.Title}}
+                        {{$item.User.Username}}
+                    </h2>
+                    {{$item.Track.Title}}
+                </div>
             </div>
-        </div>
+        </a>
         {{ end }}
     </div>
 </div>
