@@ -34,7 +34,7 @@ func setupRouter() *gin.Engine {
 func main() {
 
 	go func() {
-		for range time.Tick(10 * time.Hour) { // Run this loop once every hour
+		for range time.Tick(1 * time.Hour) { // Run this loop once every hour
 			log.Println("Loading cache...")
 			handlers.LoadCache()
 		}

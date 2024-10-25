@@ -1,24 +1,49 @@
 <div class="overflow-x-auto">
-    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 xl:grid-cols-4">
+    <div class="grid grid-cols-1 gap-4">
         {{range $index, $item := .Collection}}
         <a href="{{$item.Track.PermalinkURL}}" target="_blank" class="no-underline hover:underline">
-            <div class="card card-side m-1 rounded shadow-xl bg-gray-800 bg-opacity-75 flex">
+
+            <div class="card card-side m-1 rounded shadow-xl bg-gray-800 bg-opacity-75 flex min-h-full">
                 <figure class="basis-1/2 p-0 m-0 aspect-ratio">
-                    <img src="{{$item.Track.ArtworkURL}}" alt="Mix" class="fill-container">
+                    {{ if $item.Track.ArtworkURL}}
+                    <img src="{{$item.Track.ArtworkURL}}" class="fill-container">
+                    {{ else }}
+                    <img src="/static/placeholder.svg" class="fill-container mx-auto">
+                    {{ end }}
                 </figure>
-                <div class="basis-1/2 ml-4">
+                <div class="basis-1/2 m-2 pl-4">
                     <h2 class="card-title">
+                        {{$item.Track.Title}}
+                        <div class="badge badge-lg">{{$item.Track.DurationText}}</div>
+                    </h2>
+                    <div class="flex items-center">
                         <div class="avatar pt-2">
                             <div class="w-8 rounded-full">
                                 <img src="{{$item.User.AvatarURL}}" alt="Avatar" class="rounded-full w-8 h-8" />
                             </div>
                         </div>
                         {{$item.User.Username}}
-                    </h2>
-                    {{$item.Track.Title}}
+                        {{ if eq $item.Type "track-repost"}}
+                        <img src="/static/repost.svg" class="w-4h-r ml-1 text-gray-400">
+                        <div class="avatar pt-2">
+                            <div class="w-8 rounded-full">
+                                <img src="{{$item.Track.User.AvatarURL}}" class="rounded-full w-8" />
+                            </div>
+                        </div>
+                        {{$item.Track.User.Username}}
+
+                        {{ end }}
+                    </div>
                 </div>
             </div>
         </a>
         {{ end }}
     </div>
 </div>
+
+<script>
+    function startPlayback(url) {
+        var audio = new Audio(url);
+        audio.play();
+    }
+</script>

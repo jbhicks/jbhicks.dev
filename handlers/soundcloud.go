@@ -37,7 +37,7 @@ func HandleGetSoundcloudStream(c *gin.Context) {
 		mixes, _ = getCachedMixes(key)
 	}
 
-	PrettyPrint(mixes.Collection[0])
+	PrettyPrint(mixes.Collection[1])
 	c.Writer.Header().Set("Content-Type", "text/html")
 	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
 	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", mixes); err != nil {
@@ -56,8 +56,10 @@ func LoadCache() {
 		mixes.Collection = append(mixes.Collection, filteredTracks.Collection...)
 		offset += limit
 	}
-
 	mixes.LastUpdated = time.Now()
+	for _, track := range mixes.Collection {
+		track.Track.DurationText = setDurationText(track.Track.Duration)
+	}
 	storeCachedResponse(&mixes, key)
 }
 
@@ -192,7 +194,6 @@ func FetchSoundCloudStream(offset int, limit int) TracksResponse {
 	if err != nil {
 		log.Printf("Error reading response body: %v", err)
 	}
-
 	var tracksResponse TracksResponse
 	err = json.Unmarshal(body, &tracksResponse)
 	if err != nil {
@@ -283,6 +284,7 @@ type Track struct {
 	Downloadable     bool    `json:"downloadable"`
 	DownloadCount    int     `json:"download_count"`
 	Duration         int     `json:"duration"`
+	DurationText     string  `json:"duration_text"`
 	FullDuration     int     `json:"full_duration"`
 	EmbeddableBy     string  `json:"embeddable_by"`
 	Genre            string  `json:"genre"`
@@ -294,4 +296,20 @@ type Track struct {
 	License          string  `json:"license"`
 	Title            string  `json:"title"`
 	PermalinkURL     string  `json:"permalink_url"`
+	User             User    `json:"user,omitempty"`
+	Media            Media   `json:"media"`
+}
+
+type Media struct {
+	Transcodings []struct {
+		URL      string `json:"url"`
+		Preset   string `json:"preset"`
+		Duration int    `json:"duration"`
+		Snipped  bool   `json:"snipped"`
+		Format   struct {
+			Protocol string `json:"protocol"`
+			MimeType string `json:"mime_type"`
+		} `json:"format"`
+		Quality string `json:"quality"`
+	} `json:"transcodings"`
 }
