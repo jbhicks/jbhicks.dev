@@ -17,11 +17,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var key = "soundcloud-stream"
+const key = "soundcloud-stream"
 
+// Actual handler for the /soundcloud/stream endpoint
 func HandleGetSoundcloudStream(c *gin.Context) {
-	fmt.Println("[GET]SoundcloudStream")
-	// LoadCache() // force load on startup - debug
+	// LoadCache() // debug force load cache
+	log.Println("[GET]SoundcloudStream")
 	mixes, err := getCachedMixes(key)
 
 	if err != nil {
@@ -35,9 +36,8 @@ func HandleGetSoundcloudStream(c *gin.Context) {
 		LoadCache()
 		mixes, _ = getCachedMixes(key)
 	}
-	log.Println("Mixes loaded from cache:")
-	PrettyPrint(mixes.Collection[0])
 
+	PrettyPrint(mixes.Collection[0])
 	c.Writer.Header().Set("Content-Type", "text/html")
 	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
 	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", mixes); err != nil {
@@ -110,6 +110,20 @@ func filterTracks(tracks *TracksResponse) TracksResponse {
 		}
 	}
 	return filteredTracks
+}
+
+// take in duration in milliseconds and return a string in the format "HH:MM:SS"
+func setDurationText(duration int) string {
+	seconds := duration / 1000
+	minutes := seconds / 60
+	hours := minutes / 60
+
+	// Construct the time string with optional hour part only if hours > 0
+	if hours > 0 {
+		return fmt.Sprintf("%dh:%02dm", hours, minutes)
+	} else {
+		return fmt.Sprintf("%02dm", minutes)
+	}
 }
 
 func FetchSoundCloudStream(offset int, limit int) TracksResponse {

@@ -1,12 +1,5 @@
-<style>
-    .fill-container {
-        width: 100%;
-        height: auto;
-    }
-</style>
-
 <div class="overflow-x-auto">
-    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 xl:grid-cols-4">
         {{range $index, $item := .Collection}}
         <a href="{{$item.Track.PermalinkURL}}" target="_blank" class="no-underline hover:underline">
             <div class="card card-side m-1 rounded shadow-xl bg-gray-800 bg-opacity-75 flex">

@@ -14,7 +14,6 @@ Prerequisites are air and browser-sync:
 Built on:
 
 * [Go lang](http://go.dev)
-* [Gomponents](https://www.gomponents.com)
 * [TailwindCSS](https://tailwindcss.com)
 * [DaisyUI](https://daisyui.com)
 
