@@ -106,9 +106,7 @@ func filterTracks(tracks *TracksResponse) TracksResponse {
 		if track.Track != nil &&
 			track.Track.Duration > 1750000 &&
 			!strings.Contains(track.Type, "playlist") { // check duration greater than ~30m
-
-			// log.Printf("%s - %d", track.Track.Title, track.Track.Duration)
-			filteredTracks.Collection = append(filteredTracks.Collection, track)
+				filteredTracks.Collection = append(filteredTracks.Collection, track)
 		}
 	}
 	return filteredTracks
@@ -295,6 +293,7 @@ type Track struct {
 	LastModified     string  `json:"last_modified"`
 	License          string  `json:"license"`
 	Title            string  `json:"title"`
+	TimePassed       string  `json:"-"`
 	PermalinkURL     string  `json:"permalink_url"`
 	User             User    `json:"user,omitempty"`
 	Media            Media   `json:"media"`

@@ -6,14 +6,15 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/mux"
 	"github.com/jbhicks/jbhicks.dev/handlers"
 )
 
 func setupRouter() *gin.Engine {
-	r := gin.Default()
+	r := gin.New()
 	r.LoadHTMLGlob("templates/*")
 
-	// Health check
+	// Health chek
 	r.GET("/health", func(c *gin.Context) {
 		c.String(http.StatusOK, "OK")
 	})
