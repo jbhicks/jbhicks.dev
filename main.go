@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/mux"
 	"github.com/jbhicks/jbhicks.dev/handlers"
 )
 

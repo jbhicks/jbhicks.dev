@@ -6,9 +6,9 @@
             <div class="card card-side m-1 rounded shadow-xl bg-gray-800 bg-opacity-75 flex min-h-full">
                 <figure class="basis-1/2 p-0 m-0 aspect-ratio">
                     {{ if $item.Track.ArtworkURL}}
-                    <img src="{{$item.Track.ArtworkURL}}" class="fill-container">
+                    <img src="{{$item.Track.ArtworkURL}}" title="artwork" class="fill-container">
                     {{ else }}
-                    <img src="/static/placeholder.svg" class="fill-container mx-auto">
+                    <img src="/static/placeholder.svg" title="placeholder" class="fill-container mx-auto">
                     {{ end }}
                 </figure>
                 <div class="basis-1/2 m-2 pl-4">
@@ -24,15 +24,15 @@
                         </div>
                         {{$item.User.Username}}
                         {{ if eq $item.Type "track-repost"}}
-                        <img src="/static/repost.svg" class="w-4h-r ml-1 text-gray-400">
+                        <img src="/static/repost.svg" title="repost" class="w-4h-r ml-1 text-gray-400">
                         <div class="avatar pt-2">
                             <div class="w-8 rounded-full">
-                                <img src="{{$item.Track.User.AvatarURL}}" class="rounded-full w-8" />
+                                <img src="{{$item.Track.User.AvatarURL}}" title="avatar" class="rounded-full w-8" />
                             </div>
                         </div>
                         {{$item.Track.User.Username}}
 
-                        
+
                         {{ end }}
                     </div>
                 </div>

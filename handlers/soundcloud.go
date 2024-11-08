@@ -21,7 +21,7 @@ const key = "soundcloud-stream"
 
 // Actual handler for the /soundcloud/stream endpoint
 func HandleGetSoundcloudStream(c *gin.Context) {
-	// LoadCache() // debug force load cache
+	LoadCache() // debug force load cache
 	log.Println("[GET]SoundcloudStream")
 	mixes, err := getCachedMixes(key)
 
@@ -49,6 +49,7 @@ func LoadCache() {
 	offset := 0
 	limit := 100
 	var mixes TracksResponse
+	mixes.LastUpdated = time.Now()
 
 	for len(mixes.Collection) < 100 {
 		fetchedTracks := FetchSoundCloudStream(offset, limit)
@@ -56,7 +57,6 @@ func LoadCache() {
 		mixes.Collection = append(mixes.Collection, filteredTracks.Collection...)
 		offset += limit
 	}
-	mixes.LastUpdated = time.Now()
 	for _, track := range mixes.Collection {
 		track.Track.DurationText = setDurationText(track.Track.Duration)
 	}
@@ -106,7 +106,7 @@ func filterTracks(tracks *TracksResponse) TracksResponse {
 		if track.Track != nil &&
 			track.Track.Duration > 1750000 &&
 			!strings.Contains(track.Type, "playlist") { // check duration greater than ~30m
-				filteredTracks.Collection = append(filteredTracks.Collection, track)
+			filteredTracks.Collection = append(filteredTracks.Collection, track)
 		}
 	}
 	return filteredTracks
@@ -120,9 +120,9 @@ func setDurationText(duration int) string {
 
 	// Construct the time string with optional hour part only if hours > 0
 	if hours > 0 {
-		return fmt.Sprintf("%dh:%02dm", hours, minutes)
+		return fmt.Sprintf("%d:%02d:%02d", hours, minutes%60, seconds%60)
 	} else {
-		return fmt.Sprintf("%02dm", minutes)
+		return fmt.Sprintf("%02d:%02d", minutes, seconds%60)
 	}
 }
 
