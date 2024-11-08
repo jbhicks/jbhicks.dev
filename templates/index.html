@@ -11,13 +11,13 @@
 </head>
 
 <body class="bg-gray-700">
-    <h1>{{ .Title }}</h1>
-    <div id="tracks"></div> <!-- This is where tracks will be injected -->
-
-    <!-- HTMX attributes to fetch data from the API -->
+    <!-- Load the nav bar template using HTMX -->
+    <div hx-get="/templates/nav-bar.html" hx-trigger="load" hx-swap="innerHTML">
+    </div>
     <div hx-get="/api/soundcloud/stream" hx-trigger="load" hx-swap="innerHTML">
         Loading...
     </div>
+
 </body>
 
 </html>

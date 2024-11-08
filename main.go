@@ -27,6 +27,7 @@ func setupRouter() *gin.Engine {
 	r.GET("/api/soundcloud/stream", handlers.HandleGetSoundcloudStream)
 
 	r.Static("/static", "./static")
+	r.Static("/templates", "./templates")
 
 	return r
 }

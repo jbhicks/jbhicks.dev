@@ -37,7 +37,7 @@ func HandleGetSoundcloudStream(c *gin.Context) {
 		mixes, _ = getCachedMixes(key)
 	}
 
-	PrettyPrint(mixes.Collection[1])
+	// PrettyPrint(mixes.Collection[1])
 	c.Writer.Header().Set("Content-Type", "text/html")
 	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
 	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", mixes); err != nil {
