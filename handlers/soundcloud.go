@@ -21,7 +21,7 @@ const key = "soundcloud-stream"
 
 // Actual handler for the /soundcloud/stream endpoint
 func HandleGetSoundcloudStream(c *gin.Context) {
-	LoadCache() // debug force load cache
+	// LoadCache() // debug force load cache
 	log.Println("[GET]SoundcloudStream")
 	mixes, err := getCachedMixes(key)
 

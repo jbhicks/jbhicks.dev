@@ -1,10 +1,11 @@
 <div class="overflow-x-auto">
     <div class="grid grid-cols-1 gap-4">
+        <div class="text-center text-xl font-bold m-4">Mixes</div>
         {{range $index, $item := .Collection}}
         <a href="{{$item.Track.PermalinkURL}}" target="_blank" class="no-underline hover:underline">
 
             <div class="card card-side m-1 rounded shadow-xl bg-gray-800 bg-opacity-75 flex min-h-full">
-                <figure class="basis-1/2 p-0 m-0 aspect-ratio">
+                <figure class="basis-1/2 p-0 m-0 aspect-">
                     {{ if $item.Track.ArtworkURL}}
                     <img src="{{$item.Track.ArtworkURL}}" title="artwork" class="fill-container">
                     {{ else }}
@@ -12,14 +13,14 @@
                     {{ end }}
                 </figure>
                 <div class="basis-1/2 m-2 pl-4">
-                    <h2 class="card-title">
+                    <span class="card-title">
                         {{$item.Track.Title}}
                         <div class="badge badge-lg">{{$item.Track.DurationText}}</div>
-                    </h2>
+                    </span>
                     <div class="flex items-center">
                         <div class="avatar pt-2">
                             <div class="w-8 rounded-full">
-                                <img src="{{$item.User.AvatarURL}}" alt="Avatar" class="rounded-full w-8 h-8" />
+                                <img src="{{$item.User.AvatarURL}}" alt="Avatar" class="rounded-full w-7 h-8" />
                             </div>
                         </div>
                         {{$item.User.Username}}
@@ -41,10 +42,3 @@
         {{ end }}
     </div>
 </div>
-
-<script>
-    function startPlayback(url) {
-        var audio = new Audio(url);
-        audio.play();
-    }
-</script>
