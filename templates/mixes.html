@@ -1,6 +1,5 @@
 <div class="overflow-x-auto">
   <div class="grid grid-cols-1 gap-4">
-    <div class="text-center text-xl font-bold m-4">Mixes</div>
     {{range $index, $item := .Collection}}
     <a
       href="{{$item.Track.PermalinkURL}}"
@@ -10,12 +9,12 @@
       <div
         class="card card-side m-1 rounded shadow-xl bg-gray-800 bg-opacity-75 flex min-h-full"
       >
-        <figure class="basis-1/2 p-0 m-0 aspect-">
+        <figure class="basis-1/2 p-0 m-0 flex items-center justify-center">
           {{ if $item.Track.ArtworkURL}}
           <img
             src="{{$item.Track.ArtworkURL}}"
             title="artwork"
-            class="fill-container"
+            class="w-full h-auto"
           />
           {{ else }}
           <img
@@ -25,14 +24,11 @@
           />
           {{ end }}
         </figure>
-        <div class="basis-1/2 m-2 pl-4">
-          <span class="normal-case text-xl">
-            {{$item.Track.Title}}
-            <div class="badge badge-lg">{{$item.Track.DurationText}}</div>
-          </span>
-          <div class="flex items-center">
-            <div class="avatar pt-2">
-              <div class="w-8 rounded-full">
+        <div class="basis-1/2 pl-4 flex flex-col justify-between">
+          <span class="normal-case text-xl"> {{$item.Track.Title}} </span>
+          <div class="flex items-center gap-2">
+            <div class="avatar mr-2">
+              <div class="w-6 rounded-full">
                 <img
                   src="{{$item.User.AvatarURL}}"
                   alt="Avatar"
@@ -56,6 +52,16 @@
               </div>
             </div>
             {{$item.Track.User.Username}} {{ end }}
+          </div>
+          <div class="flex flex-row gap-2 my-2">
+            <div class="badge badge-lg">{{$item.Track.DurationText}}</div>
+            <div class="badge badge-outline">
+              {{ if eq $item.Type "track-repost"}} Reposted {{ else }} Posted
+              {{end }} {{$item.Track.TimePassed}}
+            </div>
+            {{ if $item.Track.Genre }}
+            <div class="badge badge-primary">{{ $item.Track.Genre }}</div>
+            {{ end }}
           </div>
         </div>
       </div>

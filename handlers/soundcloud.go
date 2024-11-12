@@ -37,7 +37,7 @@ func HandleGetSoundcloudStream(c *gin.Context) {
 		mixes, _ = getCachedMixes(key)
 	}
 
-	// PrettyPrint(mixes.Collection[1])
+	PrettyPrint(mixes.Collection[1])
 	c.Writer.Header().Set("Content-Type", "text/html")
 	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
 	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", mixes); err != nil {
@@ -51,16 +51,39 @@ func LoadCache() {
 	var mixes TracksResponse
 	mixes.LastUpdated = time.Now()
 
-	for len(mixes.Collection) < 100 {
+	// Filter until we have 100 mixes available
+	for len(mixes.Collection) < limit {
 		fetchedTracks := FetchSoundCloudStream(offset, limit)
 		filteredTracks := filterTracks(&fetchedTracks)
 		mixes.Collection = append(mixes.Collection, filteredTracks.Collection...)
 		offset += limit
 	}
+	// Set display properties for each track
 	for _, track := range mixes.Collection {
 		track.Track.DurationText = setDurationText(track.Track.Duration)
+		track.Track.TimePassed = setTimePassed(track.Track.CreatedAt)
+		fmt.Println("TimePassed: ", track.Track.TimePassed)
 	}
+	PrettyPrint("Loaded Mixes: ", mixes.Collection[0].Track)
 	storeCachedResponse(&mixes, key)
+}
+
+func setTimePassed(s string) string {
+	t, err := time.Parse(time.RFC3339, s)
+	if err != nil {
+		return ""
+	}
+	// Format the duration since as x days ago
+	duration := time.Since(t)
+	var result string
+	if duration.Hours() >= 24 {
+		days := int(duration.Hours() / 24)
+		result = fmt.Sprintf("%d days ago", days)
+	} else if duration.Hours() >= 1 {
+		hours := int(duration.Hours())
+		result = fmt.Sprintf("%d hours ago", hours)
+	}
+	return result
 }
 
 func storeCachedResponse(mixes *TracksResponse, key string) error {
@@ -112,7 +135,6 @@ func filterTracks(tracks *TracksResponse) TracksResponse {
 	return filteredTracks
 }
 
-// take in duration in milliseconds and return a string in the format "HH:MM:SS"
 func setDurationText(duration int) string {
 	seconds := duration / 1000
 	minutes := seconds / 60
@@ -120,9 +142,9 @@ func setDurationText(duration int) string {
 
 	// Construct the time string with optional hour part only if hours > 0
 	if hours > 0 {
-		return fmt.Sprintf("%d:%02d:%02d", hours, minutes%60, seconds%60)
+		return fmt.Sprintf("%2dh %2dm", hours, minutes%60)
 	} else {
-		return fmt.Sprintf("%02d:%02d", minutes, seconds%60)
+		return fmt.Sprintf("%02dm", minutes)
 	}
 }
 
@@ -293,7 +315,7 @@ type Track struct {
 	LastModified     string  `json:"last_modified"`
 	License          string  `json:"license"`
 	Title            string  `json:"title"`
-	TimePassed       string  `json:"-"`
+	TimePassed       string  `json:"time_passed"`
 	PermalinkURL     string  `json:"permalink_url"`
 	User             User    `json:"user,omitempty"`
 	Media            Media   `json:"media"`
