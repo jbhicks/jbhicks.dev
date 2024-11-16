@@ -25,6 +25,7 @@ func setupRouter() *gin.Engine {
 	})
 
 	r.GET("/api/soundcloud/stream", handlers.HandleGetSoundcloudStream)
+	r.GET("/api/soundcloud/favorites", handlers.HandleGetSoundcloudFavorites)
 
 	r.Static("/static", "./static")
 	r.Static("/templates", "./templates")
@@ -37,7 +38,8 @@ func main() {
 	go func() {
 		for range time.Tick(1 * time.Hour) { // Run this loop once every hour
 			log.Println("Loading cache...")
-			handlers.LoadCache()
+			handlers.LoadCache("soundcloud-stream")
+			handlers.LoadCache("soundcloud-favorites")
 		}
 	}()
 

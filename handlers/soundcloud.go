@@ -17,27 +17,54 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const key = "soundcloud-stream"
+// Handle the GET /soundcloud/favorites endpoint
+func HandleGetSoundcloudFavorites(c *gin.Context) {
+	log.Println("[GET]SoundcloudFavorites")
+	key := "soundcloud-favorites"
+
+	favorites, err := getCachedMixes(key)
+	if err != nil {
+		log.Println("Error while fetching favorites from cache, loading fresh...", err)
+		LoadCache(key)
+		favorites, _ = getCachedMixes(key)
+	}
+
+	if time.Since(favorites.LastUpdated).Hours() >= 1 {
+		log.Println("More than 1 hour has passed, loading cache")
+		LoadCache(key)
+		favorites, _ = getCachedMixes(key)
+	}
+
+	log.Println("Got Favorites: ", len(favorites.Collection))
+	// PrettyPrint(favorites.Collection[1])
+
+	c.Writer.Header().Set("Content-Type", "text/html")
+	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
+	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", favorites); err != nil {
+		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
+	}
+}
 
 // Actual handler for the /soundcloud/stream endpoint
 func HandleGetSoundcloudStream(c *gin.Context) {
+	key := "soundcloud-stream"
 	// LoadCache() // debug force load cache
 	log.Println("[GET]SoundcloudStream")
 	mixes, err := getCachedMixes(key)
 
 	if err != nil {
-		log.Println("Error while fetching mixes from cache, loading fresh...", err)
-		LoadCache()
+		log.Println("Error while fetching stream from cache, loading fresh...", err)
+		LoadCache(key)
 		mixes, _ = getCachedMixes(key)
 	}
 
 	if time.Since(mixes.LastUpdated).Hours() >= 1 {
 		log.Println("More than 1 hour has passed, loading cache")
-		LoadCache()
+		LoadCache(key)
 		mixes, _ = getCachedMixes(key)
 	}
 
-	PrettyPrint(mixes.Collection[1])
+	// PrettyPrint(mixes.Collection[1])
 	c.Writer.Header().Set("Content-Type", "text/html")
 	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
 	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", mixes); err != nil {
@@ -45,27 +72,28 @@ func HandleGetSoundcloudStream(c *gin.Context) {
 	}
 }
 
-func LoadCache() {
+func LoadCache(key string) {
 	offset := 0
 	limit := 100
-	var mixes TracksResponse
-	mixes.LastUpdated = time.Now()
+	var tracks TracksResponse
+	tracks.LastUpdated = time.Now()
 
 	// Filter until we have 100 mixes available
-	for len(mixes.Collection) < limit {
-		fetchedTracks := FetchSoundCloudStream(offset, limit)
+	for len(tracks.Collection) < limit {
+		fetchedTracks := FetchSoundcloudData(key, offset, limit)
 		filteredTracks := filterTracks(&fetchedTracks)
-		mixes.Collection = append(mixes.Collection, filteredTracks.Collection...)
+		tracks.Collection = append(tracks.Collection, filteredTracks.Collection...)
 		offset += limit
 	}
+
 	// Set display properties for each track
-	for _, track := range mixes.Collection {
+	for _, track := range tracks.Collection {
 		track.Track.DurationText = setDurationText(track.Track.Duration)
 		track.Track.TimePassed = setTimePassed(track.Track.CreatedAt)
 		fmt.Println("TimePassed: ", track.Track.TimePassed)
 	}
-	PrettyPrint("Loaded Mixes: ", mixes.Collection[0].Track)
-	storeCachedResponse(&mixes, key)
+	// PrettyPrint("Loaded cache:", tracks.Collection[0].Track)
+	storeCachedResponse(&tracks, key)
 }
 
 func setTimePassed(s string) string {
@@ -148,7 +176,7 @@ func setDurationText(duration int) string {
 	}
 }
 
-func FetchSoundCloudStream(offset int, limit int) TracksResponse {
+func FetchSoundcloudData(endpoint string, offset int, limit int) TracksResponse {
 	authorization := os.Getenv("sc_auth_token")
 	sc_a_id := os.Getenv("sc_a_id")
 	sc_client_id := os.Getenv("sc_client_id")
@@ -163,7 +191,16 @@ func FetchSoundCloudStream(offset int, limit int) TracksResponse {
 		fmt.Println("Warning: sc_client_id is blank")
 	}
 
-	url := fmt.Sprintf("https://api-v2.soundcloud.com/stream?offset=%d&sc_a_id=%s&limit=%d&promoted_playlist=true&client_id=%s&app_version=1660231961&app_locale=en", offset, sc_a_id, limit, sc_client_id)
+	var url string
+	if endpoint == "soundcloud-stream" {
+		url = fmt.Sprintf("https://api-v2.soundcloud.com/%s?offset=%d&sc_a_id=%s&limit=%d&promoted_playlist=true&client_id=%s&app_version=1660231961&app_locale=en", endpoint, offset, sc_a_id, limit, sc_client_id)
+	} else if endpoint == "soundcloud-favorites" {
+		url = fmt.Sprintf("https://api-v2.soundcloud.com/users/141564746/track_likes?offset=%d&limit=%d&client_id=%s&app_version=1731681989&app_locale=en", offset, limit, sc_client_id)
+	} else {
+		log.Printf("Unsupported endpoint: %s", endpoint)
+		return TracksResponse{}
+	}
+
 	headers := map[string]string{
 		"Accept":             "application/json, text/javascript, */*; q=0.01",
 		"Accept-Encoding":    "gzip, deflate, br",
