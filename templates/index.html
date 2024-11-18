@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <title>{{ .title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- <script src="/static/tailwind-3.4.14.js"></script> -->
     <link href="/static/tailwind.css" rel="stylesheet" type="text/css" />
     <link href="/static/daisyui.min.css" rel="stylesheet" type="text/css" />
     <script src="/static/htmx.min.js"></script>
@@ -25,18 +24,16 @@
         hx-get="/api/soundcloud/stream"
         hx-trigger="load"
         hx-swap="innerHTML"
-      >
-      </div>
-      <div
+      ></div>
+      <!-- <div
         class="w-1/2 overflow-y-auto"
         hx-get="/api/soundcloud/favorites"
         hx-trigger="load"
         hx-swap="innerHTML"
       >
-      </div>
+      </div> -->
     </div>
 
-      Loading...
-    </div>
+    Loading...
   </body>
 </html>

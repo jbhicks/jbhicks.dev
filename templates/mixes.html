@@ -55,10 +55,7 @@
           </div>
           <div class="flex flex-row gap-2 my-2">
             <div class="badge badge-lg">{{$item.Track.DurationText}}</div>
-            <div class="badge badge-outline">
-              {{ if eq $item.Type "track-repost"}} Reposted {{ else }} Posted
-              {{end }} {{$item.Track.TimePassed}}
-            </div>
+            <div class="badge badge-outline">{{$item.Track.TimePassed}}</div>
             {{ if $item.Track.Genre }}
             <div class="badge badge-primary">{{ $item.Track.Genre }}</div>
             {{ end }}

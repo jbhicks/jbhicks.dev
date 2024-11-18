@@ -5,14 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 	"time"
-
-	"html/template"
 
 	"github.com/gin-gonic/gin"
 )
@@ -38,11 +37,11 @@ func HandleGetSoundcloudFavorites(c *gin.Context) {
 	log.Println("Got Favorites: ", len(favorites.Collection))
 	// PrettyPrint(favorites.Collection[1])
 
-	c.Writer.Header().Set("Content-Type", "text/html")
-	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
-	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", favorites); err != nil {
-		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
-	}
+	// c.Writer.Header().Set("Content-Type", "text/html")
+	// tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
+	// if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", favorites); err != nil {
+	// 	http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
+	// }
 }
 
 // Actual handler for the /soundcloud/stream endpoint
@@ -51,7 +50,6 @@ func HandleGetSoundcloudStream(c *gin.Context) {
 	// LoadCache() // debug force load cache
 	log.Println("[GET]SoundcloudStream")
 	mixes, err := getCachedMixes(key)
-
 	if err != nil {
 		log.Println("Error while fetching stream from cache, loading fresh...", err)
 		LoadCache(key)
@@ -79,7 +77,9 @@ func LoadCache(key string) {
 	tracks.LastUpdated = time.Now()
 
 	// Filter until we have 100 mixes available
+	log.Printf("Fetching Soundcloud data for key: %s", key)
 	for len(tracks.Collection) < limit {
+		log.Printf("filtering")
 		fetchedTracks := FetchSoundcloudData(key, offset, limit)
 		filteredTracks := filterTracks(&fetchedTracks)
 		tracks.Collection = append(tracks.Collection, filteredTracks.Collection...)
@@ -193,7 +193,7 @@ func FetchSoundcloudData(endpoint string, offset int, limit int) TracksResponse 
 
 	var url string
 	if endpoint == "soundcloud-stream" {
-		url = fmt.Sprintf("https://api-v2.soundcloud.com/%s?offset=%d&sc_a_id=%s&limit=%d&promoted_playlist=true&client_id=%s&app_version=1660231961&app_locale=en", endpoint, offset, sc_a_id, limit, sc_client_id)
+		url = fmt.Sprintf("https://api-v2.soundcloud.com/stream?offset=%d&sc_a_id=%s&limit=%d&promoted_playlist=true&client_id=%s&app_version=1660231961&app_locale=en", offset, sc_a_id, limit, sc_client_id)
 	} else if endpoint == "soundcloud-favorites" {
 		url = fmt.Sprintf("https://api-v2.soundcloud.com/users/141564746/track_likes?offset=%d&limit=%d&client_id=%s&app_version=1731681989&app_locale=en", offset, limit, sc_client_id)
 	} else {
@@ -223,6 +223,7 @@ func FetchSoundcloudData(endpoint string, offset int, limit int) TracksResponse 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Printf("Error creating request: %v", err)
+		return TracksResponse{}
 	}
 
 	for key, value := range headers {
@@ -232,29 +233,38 @@ func FetchSoundcloudData(endpoint string, offset int, limit int) TracksResponse 
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Printf("Error making request: %v", err)
+		return TracksResponse{}
 	}
 	defer resp.Body.Close()
 
-	var reader io.ReadCloser
+	// Check the content encoding and decompress if necessary
+	var body []byte
 	switch resp.Header.Get("Content-Encoding") {
 	case "gzip":
-		reader, err = gzip.NewReader(resp.Body)
+		reader, err := gzip.NewReader(resp.Body)
 		if err != nil {
 			log.Printf("Error creating gzip reader: %v", err)
+			return TracksResponse{}
 		}
-		defer reader.Close()
+		body, err = io.ReadAll(reader)
+		if err != nil {
+			log.Printf("Error reading decompressed response body: %v", err)
+			return TracksResponse{}
+		}
 	default:
-		reader = resp.Body
+		// If not GZIP, just read the entire body
+		bodyBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			log.Printf("Error reading response body: %v", err)
+			return TracksResponse{}
+		}
+		body = bodyBytes
 	}
 
-	body, err := io.ReadAll(reader)
-	if err != nil {
-		log.Printf("Error reading response body: %v", err)
-	}
 	var tracksResponse TracksResponse
-	err = json.Unmarshal(body, &tracksResponse)
-	if err != nil {
+	if err := json.Unmarshal(body, &tracksResponse); err != nil {
 		log.Printf("Error unmarshalling response: %v", err)
+		return TracksResponse{}
 	}
 	return tracksResponse
 }
