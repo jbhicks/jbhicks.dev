@@ -37,11 +37,11 @@ func HandleGetSoundcloudFavorites(c *gin.Context) {
 	log.Println("Got Favorites: ", len(favorites.Collection))
 	// PrettyPrint(favorites.Collection[1])
 
-	// c.Writer.Header().Set("Content-Type", "text/html")
-	// tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
-	// if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", favorites); err != nil {
-	// 	http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
-	// }
+	c.Writer.Header().Set("Content-Type", "text/html")
+	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
+	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", favorites); err != nil {
+		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // Actual handler for the /soundcloud/stream endpoint
