@@ -1,9 +1,7 @@
 package main
 
 import (
-	"log"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jbhicks/jbhicks.dev/handlers"
@@ -35,13 +33,13 @@ func setupRouter() *gin.Engine {
 
 func main() {
 
-	go func() {
-		for range time.Tick(1 * time.Hour) { // Run this loop once every hour
-			log.Println("Loading cache...")
-			handlers.LoadCache("soundcloud-stream")
-			handlers.LoadCache("soundcloud-favorites")
-		}
-	}()
+	// go func() {
+	// 	for range time.Tick(1 * time.Hour) { // Run this loop once every hour
+	// 		log.Println("Loading cache...")
+	// 		handlers.LoadCache("soundcloud-stream", true)
+	// 		handlers.LoadCache("soundcloud-favorites", false)
+	// 	}
+	// }()
 
 	r := setupRouter()
 

@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -18,51 +19,32 @@ import (
 
 // Handle the GET /soundcloud/favorites endpoint
 func HandleGetSoundcloudFavorites(c *gin.Context) {
-	log.Println("[GET]SoundcloudFavorites")
-	key := "soundcloud-favorites"
-
-	favorites, err := getCachedMixes(key)
-	if err != nil {
-		log.Println("Error while fetching favorites from cache, loading fresh...", err)
-		LoadCache(key)
-		favorites, _ = getCachedMixes(key)
-	}
-
-	if time.Since(favorites.LastUpdated).Hours() >= 1 {
-		log.Println("More than 1 hour has passed, loading cache")
-		LoadCache(key)
-		favorites, _ = getCachedMixes(key)
-	}
-
-	log.Println("Got Favorites: ", len(favorites.Collection))
-	// PrettyPrint(favorites.Collection[1])
-
-	c.Writer.Header().Set("Content-Type", "text/html")
-	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
-	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", favorites); err != nil {
-		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
-	}
+	handleSoundcloudRequest(c, "soundcloud-favorites", false)
 }
 
-// Actual handler for the /soundcloud/stream endpoint
+// Handle the GET /soundcloud/stream endpoint
 func HandleGetSoundcloudStream(c *gin.Context) {
-	key := "soundcloud-stream"
-	// LoadCache() // debug force load cache
-	log.Println("[GET]SoundcloudStream")
+	handleSoundcloudRequest(c, "soundcloud-stream", true)
+}
+
+// Common function to handle Soundcloud requests
+func handleSoundcloudRequest(c *gin.Context, key string, filter bool) {
+	log.Printf("[GET] %s", key)
+	LoadCache(key, filter) // debug force load cache
 	mixes, err := getCachedMixes(key)
 	if err != nil {
-		log.Println("Error while fetching stream from cache, loading fresh...", err)
-		LoadCache(key)
+		log.Printf("Error while fetching data from cache for %s, loading fresh...", key)
+		LoadCache(key, filter)
 		mixes, _ = getCachedMixes(key)
 	}
 
 	if time.Since(mixes.LastUpdated).Hours() >= 1 {
-		log.Println("More than 1 hour has passed, loading cache")
-		LoadCache(key)
+		log.Printf("More than 1 hour has passed, loading cache for %s", key)
+		LoadCache(key, filter)
 		mixes, _ = getCachedMixes(key)
 	}
 
-	// PrettyPrint(mixes.Collection[1])
+	log.Printf("Got Mixes: %s, %d", key, len(mixes.Collection))
 	c.Writer.Header().Set("Content-Type", "text/html")
 	tmpl := template.Must(template.ParseFiles("templates/mixes.html"))
 	if err := tmpl.ExecuteTemplate(c.Writer, "mixes.html", mixes); err != nil {
@@ -70,29 +52,54 @@ func HandleGetSoundcloudStream(c *gin.Context) {
 	}
 }
 
-func LoadCache(key string) {
+func LoadCache(key string, filter bool) {
 	offset := 0
 	limit := 100
 	var tracks TracksResponse
 	tracks.LastUpdated = time.Now()
+	trackIDs := make(map[int]bool) // Map to track unique track IDs
 
-	// Filter until we have 100 mixes available
 	log.Printf("Fetching Soundcloud data for key: %s", key)
-	for len(tracks.Collection) < limit {
-		log.Printf("filtering")
+	if filter {
+		// Filter until we have 100 unique tracks
+		for len(tracks.Collection) < limit {
+			fetchedTracks := FetchSoundcloudData(key, offset, limit)
+			if len(fetchedTracks.Collection) == 0 {
+				log.Printf("No more tracks to fetch for key: %s", key)
+				break
+			}
+			fetchedTracks = filterTracks(&fetchedTracks)
+			for _, track := range fetchedTracks.Collection {
+				if !trackIDs[track.Track.ID] {
+					tracks.Collection = append(tracks.Collection, track)
+					trackIDs[track.Track.ID] = true
+				}
+			}
+			offset += limit
+		}
+	} else {
+		// Fetch tracks without additional filtering
 		fetchedTracks := FetchSoundcloudData(key, offset, limit)
-		filteredTracks := filterTracks(&fetchedTracks)
-		tracks.Collection = append(tracks.Collection, filteredTracks.Collection...)
-		offset += limit
+		tracks.Collection = append(tracks.Collection, fetchedTracks.Collection...)
 	}
+
+	// Sort tracks by CreatedAt in reverse order
+	sort.Slice(tracks.Collection, func(i, j int) bool {
+		timeI, errI := time.Parse(time.RFC3339, tracks.Collection[i].Track.CreatedAt)
+		timeJ, errJ := time.Parse(time.RFC3339, tracks.Collection[j].Track.CreatedAt)
+		if errI != nil || errJ != nil {
+			return false
+		}
+		return timeI.After(timeJ)
+	})
 
 	// Set display properties for each track
 	for _, track := range tracks.Collection {
 		track.Track.DurationText = setDurationText(track.Track.Duration)
 		track.Track.TimePassed = setTimePassed(track.Track.CreatedAt)
-		fmt.Println("TimePassed: ", track.Track.TimePassed)
 	}
-	// PrettyPrint("Loaded cache:", tracks.Collection[0].Track)
+
+	log.Printf("Sorted tracks by CreatedAt: %v", len(tracks.Collection))
 	storeCachedResponse(&tracks, key)
 }
 
@@ -177,6 +184,7 @@ func setDurationText(duration int) string {
 }
 
 func FetchSoundcloudData(endpoint string, offset int, limit int) TracksResponse {
+	log.Printf("Fetching data from Soundcloud for endpoint: %s, offset: %d, limit: %d", endpoint, offset, limit)
 	authorization := os.Getenv("sc_auth_token")
 	sc_a_id := os.Getenv("sc_a_id")
 	sc_client_id := os.Getenv("sc_client_id")
@@ -266,6 +274,7 @@ func FetchSoundcloudData(endpoint string, offset int, limit int) TracksResponse 
 		log.Printf("Error unmarshalling response: %v", err)
 		return TracksResponse{}
 	}
+	log.Printf("Fetched %d tracks from Soundcloud for endpoint: %s", len(tracksResponse.Collection), endpoint)
 	return tracksResponse
 }
 
