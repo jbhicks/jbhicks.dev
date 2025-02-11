@@ -30,7 +30,7 @@ func HandleGetSoundcloudStream(c *gin.Context) {
 // Common function to handle Soundcloud requests
 func handleSoundcloudRequest(c *gin.Context, key string, filter bool) {
 	log.Printf("[GET] %s", key)
-	LoadCache(key, filter) // debug force load cache
+	// LoadCache(key, filter) // debug force load cache
 	mixes, err := getCachedMixes(key)
 	if err != nil {
 		log.Printf("Error while fetching data from cache for %s, loading fresh...", key)
