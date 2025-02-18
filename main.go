@@ -20,7 +20,7 @@ func setupRouter() *gin.Engine {
 
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
-			"title": "Main website",
+			"title": "jbhicks.dev",
 		})
 	})
 

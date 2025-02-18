@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>{{ .title }}</title>
+    <title>Development Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="/static/tailwind.css" rel="stylesheet" type="text/css" />
     <link href="/static/daisyui.min.css" rel="stylesheet" type="text/css" />
@@ -18,41 +18,52 @@
       hx-swap="innerHTML"
     ></div>
 
-    <div class="container mx-auto p-4">
-          <div class="flex gap-4">
-            <div
-              class="w-1/2 overflow-y-auto"
-              hx-get="/api/soundcloud/stream"
-              hx-trigger="load"
-              hx-swap="innerHTML"
-            ></div>
-            <div
-              class="w-1/2 overflow-y-auto"
-              hx-get="/api/soundcloud/favorites"
-              hx-trigger="load"
-              hx-swap="innerHTML"
-            ></div>
+    <div class="container mx-auto px-2">
+      <h1 class="text-center text-3xl font-bold mb-4">Development Dashboard</h1>
+
+      <!-- Adjusted two columns with reduced gap -->
+      <div class="flex flex-col lg:flex-row items-stretch gap-2">
+        <!-- Soundcloud Mixes Column with reduced padding -->
+        <div class="flex-1 rounded-box bg-base-200 p-2">
+          <p class="text-2xl font-bold mb-2">Soundcloud Mixes</p>
+          <!-- Sub-tabs for Mixes remain as tabs -->
+          <div class="tabs tabs-lifted">
+            <a role="tab" class="tab tab-bordered tab-active" data-sub-tab="stream">Stream</a>
+            <a role="tab" class="tab tab-bordered" data-sub-tab="favorites">Favorites</a>
+          </div>
+          
+          <!-- Sub-tab content panels -->
+          <div id="stream" class="sub-tab-panel mt-4">
+            <div class="overflow-y-auto" hx-get="/api/soundcloud/stream" hx-trigger="load" hx-swap="innerHTML"></div>
+          </div>
+          <div id="favorites" class="sub-tab-panel hidden mt-4">
+            <div class="overflow-y-auto" hx-get="/api/soundcloud/favorites" hx-trigger="load" hx-swap="innerHTML"></div>
           </div>
         </div>
 
-        <input type="radio" name="dashboard_tabs" role="tab" class="tab" aria-label="Projects" />
-        <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-          <h2 class="text-2xl font-bold mb-4">Projects</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Projects content will go here -->
-            <p>Coming soon...</p>
-          </div>
-        </div>
+        <!-- Vertical Divider using DaisyUI remains unchanged -->
+        <div class="divider divider-vertical lg:divider-horizontal"></div>
 
-        <input type="radio" name="dashboard_tabs" role="tab" class="tab" aria-label="Blog" />
-        <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-          <h2 class="text-2xl font-bold mb-4">Blog</h2>
-          <div class="prose">
-            <!-- Blog content will go here -->
-            <p>Coming soon...</p>
-          </div>
+        <!-- News Column with reduced padding -->
+        <div class="flex-1 rounded-box bg-base-200 p-2">
+          <p class="text-2xl font-bold mb-2">News</p>
+          <p>Coming soon...</p>
         </div>
       </div>
     </div>
+
+    <!-- Remove primary tab switching script. Retain sub-tab switching script for Mixes only -->
+    <script>
+      // Sub-tabs switching within the Mixes column
+      document.querySelectorAll('[data-sub-tab]').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('[data-sub-tab]').forEach(t => t.classList.remove('tab-active'));
+          tab.classList.add('tab-active');
+          const target = tab.getAttribute('data-sub-tab');
+          document.querySelectorAll('.sub-tab-panel').forEach(panel => panel.classList.add('hidden'));
+          document.getElementById(target).classList.remove('hidden');
+        });
+      });
+    </script>
   </body>
 </html>
