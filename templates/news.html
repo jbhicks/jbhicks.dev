@@ -1,0 +1,20 @@
+<!-- news.html -->
+{{define "news-content"}}
+<div class="space-y-4 max-h-screen overflow-y-auto p-2">
+  {{range .Collection}}
+    <div class="card card-compact bg-base-100 shadow-md">
+      <div class="card-body">
+        <div class="flex justify-between items-start">
+          <h2 class="card-title text-base">
+            <a href="{{.Link}}" target="_blank" class="hover:underline">{{.Title}}</a>
+          </h2>
+        </div>
+        <div class="text-xs text-gray-500 flex justify-between">
+          <span>{{.Source}}</span>
+          <span>{{.TimePassed}}</span>
+        </div>
+      </div>
+    </div>
+  {{end}}
+</div>
+{{end}}
