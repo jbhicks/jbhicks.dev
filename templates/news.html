@@ -5,13 +5,20 @@
     <div class="card card-compact bg-base-100 shadow-md">
       <div class="card-body">
         <div class="flex justify-between items-start">
-          <h2 class="card-title text-base">
-            <a href="{{.Link}}" target="_blank" class="hover:underline">{{.Title}}</a>
-          </h2>
-        </div>
-        <div class="text-xs text-gray-500 flex justify-between">
-          <span>{{.Source}}</span>
-          <span>{{.TimePassed}}</span>
+          <div class="flex flex-col">
+            <h2 class="card-title text-base">
+              <a href="{{.Link}}" target="_blank" class="hover:underline">{{.Title}}</a>
+            </h2>
+            <div class="text-xs text-gray-500 flex justify-between">
+              <span>{{.Source}}</span>
+              <span>{{.TimePassed}}</span>
+            </div>
+          </div>
+          {{if .ImageURL}}
+            <div class="ml-2 flex-shrink-0">
+              <img src="{{.ImageURL}}" alt="Article preview" class="h-16 w-24 object-cover rounded" onerror="this.src='/static/placeholder.svg'; this.onerror=null;"/>
+            </div>
+          {{end}}
         </div>
       </div>
     </div>

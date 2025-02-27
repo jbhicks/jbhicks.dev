@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -36,6 +37,7 @@ type Item struct {
 	Source      string `xml:"-"` // Track the source feed
 	PublishedAt time.Time
 	TimePassed  string
+	ImageURL    string `xml:"-"` // Store the image URL from the feed
 }
 
 // NewsResponse holds all news items from various sources
@@ -169,6 +171,9 @@ func fetchRSSFeed(url string, sourceName string) ([]Item, error) {
 		item.PublishedAt = pubTime
 		item.TimePassed = formatTimePassed(pubTime)
 
+		// Extract image URL from the description
+		item.ImageURL = extractImageFromDescription(item.Description)
+
 		items = append(items, item)
 	}
 
@@ -248,4 +253,62 @@ func getCachedNews() (*NewsResponse, error) {
 	}
 
 	return &cachedResponse, nil
+}
+
+// extractImageFromDescription extracts the first image URL from an HTML description
+func extractImageFromDescription(description string) string {
+	// Look for img tag
+	imgStartIndex := strings.Index(description, "<img")
+	if imgStartIndex == -1 {
+		return ""
+	}
+
+	// Find src attribute
+	srcStartIndex := strings.Index(description[imgStartIndex:], "src=")
+	if srcStartIndex == -1 {
+		return ""
+	}
+
+	srcStartIndex += imgStartIndex + 4 // Add "src=" length
+
+	// Determine if quote is single or double
+	var quoteChar byte
+	if srcStartIndex < len(description) && description[srcStartIndex] == '"' {
+		quoteChar = '"'
+	} else if srcStartIndex < len(description) && description[srcStartIndex] == '\'' {
+		quoteChar = '\''
+	} else {
+		// Handle case where there are no quotes (less common)
+		spaceIndex := strings.IndexByte(description[srcStartIndex:], ' ')
+		if spaceIndex == -1 {
+			closingIndex := strings.Index(description[srcStartIndex:], ">")
+			if closingIndex == -1 {
+				return ""
+			}
+			return strings.TrimSpace(description[srcStartIndex : srcStartIndex+closingIndex])
+		}
+		return strings.TrimSpace(description[srcStartIndex : srcStartIndex+spaceIndex])
+	}
+
+	// Skip the quote character
+	srcStartIndex++
+
+	// Find the closing quote
+	srcEndIndex := strings.IndexByte(description[srcStartIndex:], quoteChar)
+	if srcEndIndex == -1 {
+		return ""
+	}
+
+	// Extract the URL
+	imageURL := description[srcStartIndex : srcStartIndex+srcEndIndex]
+
+	// Simple URL validation - could be expanded
+	if !strings.HasPrefix(imageURL, "http") && !strings.HasPrefix(imageURL, "https") {
+		// Handle relative URLs - skipping for simplicity but you might want to resolve these
+		if strings.HasPrefix(imageURL, "//") {
+			imageURL = "https:" + imageURL
+		}
+	}
+
+	return imageURL
 }
