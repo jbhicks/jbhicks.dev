@@ -30,13 +30,13 @@
             <div class="avatar mr-2">
               <div class="w-6 rounded-full">
                 <img
-                  src="{{$item.User.AvatarURL}}"
+                  src="{{$item.Track.User.AvatarURL}}"
                   alt="Avatar"
                   class="rounded-full w-7 h-8"
                 />
               </div>
             </div>
-            {{$item.User.Username}} {{ if eq $item.Type "track-repost"}}
+            {{$item.Track.User.Username}} {{ if eq $item.Type "track-repost"}}
             <img
               src="/static/repost.svg"
               title="repost"
