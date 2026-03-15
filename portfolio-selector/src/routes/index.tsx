@@ -88,18 +88,18 @@ function RainDrop({ delay }: { delay: number }) {
   
   return (
     <motion.div
-      className="absolute w-0.5 h-4 bg-gradient-to-b from-transparent via-cyan-400/30 to-transparent rounded-full"
+      className="absolute w-1 h-12 bg-cyan-400 rounded-full shadow-[0_0_6px_rgba(34,211,238,0.8)]"
       style={{ left: `${startX}%` }}
       initial={{ 
-        y: -20,
+        y: -50,
         opacity: 0
       }}
       animate={{ 
-        y: ['0vh', '100vh'],
-        opacity: [0, 0.6, 0]
+        y: [0, 200],
+        opacity: [0, 1, 1, 0]
       }}
       transition={{ 
-        duration: 2 + Math.random() * 2,
+        duration: 1.2 + Math.random() * 0.8,
         delay,
         repeat: Infinity,
         ease: "linear"
@@ -306,107 +306,103 @@ export default function JoshuaEnhancedHub() {
           : 'linear-gradient(to bottom right, #f1f5f9, #e2e8f0, #cbd5e1)'
       }}
     >
-      {/* Abstract artistic background with overlapping elements */}
+      {/* Subtle rain background effect */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        {/* Large gradient mesh */}
-        <div className="absolute inset-0 opacity-30">
-          <div className={`absolute top-0 right-0 w-[800px] h-[800px] rounded-full blur-[120px] animate-pulse transition-colors duration-1000 ${isDarkMode ? 'bg-gradient-to-br from-purple-600/40 via-blue-600/30 to-cyan-600/40' : 'bg-gradient-to-br from-orange-400/30 via-pink-400/20 to-purple-400/30'}`} style={{ animationDuration: '8s' }} />
-          <div className={`absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full blur-[100px] animate-pulse transition-colors duration-1000 ${isDarkMode ? 'bg-gradient-to-tr from-indigo-600/30 via-purple-600/20 to-pink-600/30' : 'bg-gradient-to-tr from-cyan-400/25 via-blue-400/20 to-indigo-400/25'}`} style={{ animationDuration: '10s', animationDelay: '2s' }} />
-          <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full blur-[90px] animate-pulse transition-colors duration-1000 ${isDarkMode ? 'bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20' : 'bg-gradient-to-r from-amber-300/20 via-orange-300/15 to-rose-300/20'}`} style={{ animationDuration: '12s', animationDelay: '4s' }} />
+        {/* Soft ambient gradient */}
+        <div className="absolute inset-0 opacity-20">
+          <div className={`absolute inset-0 transition-colors duration-1000 ${isDarkMode ? 'bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900' : 'bg-gradient-to-b from-slate-100 via-slate-200 to-slate-100'}`} />
         </div>
         
-        {/* Floating geometric shapes */}
-        <motion.div 
-          className={`absolute top-[10%] left-[5%] w-32 h-32 border-2 rounded-2xl transition-colors duration-700 ${isDarkMode ? 'border-purple-500/20' : 'border-orange-400/20'}`}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-          style={{ transformStyle: 'preserve-3d' }}
-        />
-        
-        <motion.div 
-          className={`absolute top-[20%] right-[8%] w-24 h-24 border transition-colors duration-700 ${isDarkMode ? 'border-cyan-500/15' : 'border-blue-400/15'}`}
-          animate={{ rotate: -360 }}
-          transition={{ duration: 80, repeat: Infinity, ease: "linear" }}
-          style={{ transform: 'rotate(45deg)' }}
-        />
-        
-        <motion.div 
-          className={`absolute bottom-[30%] left-[12%] w-40 h-40 rounded-full border-2 transition-colors duration-700 ${isDarkMode ? 'border-indigo-500/10' : 'border-purple-400/10'}`}
-          animate={{ scale: [1, 1.1, 1] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        />
-        
-        {/* Glassmorphism floating cards */}
-        <div className={`absolute top-[15%] right-[15%] w-48 h-64 rounded-2xl backdrop-blur-md border transition-all duration-700 ${isDarkMode ? 'bg-gray-900/20 border-gray-700/30' : 'bg-white/30 border-gray-200/50'}`}
-          style={{ transform: 'rotate(-6deg) translateZ(-10px)' }}
-        >
-          <div className={`absolute top-4 left-4 w-20 h-2 rounded transition-colors duration-700 ${isDarkMode ? 'bg-purple-500/30' : 'bg-orange-400/30'}`} />
-          <div className={`absolute top-8 left-4 w-32 h-2 rounded transition-colors duration-700 ${isDarkMode ? 'bg-purple-500/20' : 'bg-orange-400/20'}`} />
-          <div className={`absolute top-12 left-4 w-24 h-2 rounded transition-colors duration-700 ${isDarkMode ? 'bg-purple-500/10' : 'bg-orange-400/10'}`} />
+        {/* Rain drops container */}
+        <div className="absolute inset-0">
+          {[...Array(50)].map((_, i) => {
+            const left = Math.random() * 100;
+            const delay = Math.random() * 3;
+            const duration = 0.8 + Math.random() * 0.6;
+            const height = 15 + Math.random() * 25;
+            const opacity = 0.1 + Math.random() * 0.2;
+            
+            return (
+              <motion.div
+                key={i}
+                className={`absolute w-[1px] rounded-full transition-colors duration-700 ${isDarkMode ? 'bg-gradient-to-b from-transparent via-cyan-400/60 to-transparent' : 'bg-gradient-to-b from-transparent via-slate-400/40 to-transparent'}`}
+                style={{
+                  left: `${left}%`,
+                  height: `${height}px`,
+                  opacity: opacity,
+                }}
+                initial={{ top: '-5%' }}
+                animate={{ top: '105%' }}
+                transition={{
+                  duration: duration,
+                  repeat: Infinity,
+                  delay: delay,
+                  ease: "linear"
+                }}
+              />
+            );
+          })}
         </div>
         
-        <div className={`absolute bottom-[20%] right-[25%] w-56 h-40 rounded-2xl backdrop-blur-md border transition-all duration-700 ${isDarkMode ? 'bg-gray-900/15 border-gray-700/20' : 'bg-white/25 border-gray-200/40'}`}
-          style={{ transform: 'rotate(8deg)' }}
-        >
-          <div className="absolute inset-4 rounded-xl overflow-hidden">
-            <div className={`absolute inset-0 transition-opacity duration-700 ${isDarkMode ? 'opacity-20 bg-gradient-to-br from-cyan-500 to-blue-500' : 'opacity-30 bg-gradient-to-br from-pink-400 to-orange-400'}`} />
-          </div>
+        {/* Occasional larger rain streaks */}
+        <div className="absolute inset-0">
+          {[...Array(15)].map((_, i) => {
+            const left = Math.random() * 100;
+            const delay = Math.random() * 5;
+            const duration = 0.5 + Math.random() * 0.4;
+            const height = 40 + Math.random() * 30;
+            
+            return (
+              <motion.div
+                key={`streak-${i}`}
+                className={`absolute w-[2px] rounded-full transition-colors duration-700 ${isDarkMode ? 'bg-gradient-to-b from-transparent via-blue-400/40 to-transparent' : 'bg-gradient-to-b from-transparent via-slate-500/30 to-transparent'}`}
+                style={{
+                  left: `${left}%`,
+                  height: `${height}px`,
+                  opacity: 0.15,
+                }}
+                initial={{ top: '-10%' }}
+                animate={{ top: '110%' }}
+                transition={{
+                  duration: duration,
+                  repeat: Infinity,
+                  delay: delay,
+                  ease: "linear"
+                }}
+              />
+            );
+          })}
         </div>
         
-        {/* Floating code brackets */}
-        <motion.div 
-          className={`absolute top-[40%] left-[8%] text-6xl font-mono font-bold transition-colors duration-700 ${isDarkMode ? 'text-cyan-500/10' : 'text-blue-400/15'}`}
-          animate={{ y: [-10, 10, -10] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        >
-          {'{'}
-        </motion.div>
+        {/* Subtle ripple effect at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 overflow-hidden opacity-10">
+          {[...Array(8)].map((_, i) => (
+            <motion.div
+              key={`ripple-${i}`}
+              className={`absolute bottom-0 h-[1px] rounded-full transition-colors duration-700 ${isDarkMode ? 'bg-cyan-400/50' : 'bg-slate-400/40'}`}
+              style={{
+                left: `${10 + i * 12}%`,
+                width: '60px',
+              }}
+              animate={{
+                width: ['60px', '100px', '60px'],
+                opacity: [0.3, 0.1, 0.3],
+              }}
+              transition={{
+                duration: 3 + Math.random() * 2,
+                repeat: Infinity,
+                delay: i * 0.4,
+                ease: "easeInOut"
+              }}
+            />
+          ))}
+        </div>
         
-        <motion.div 
-          className={`absolute top-[45%] right-[10%] text-6xl font-mono font-bold transition-colors duration-700 ${isDarkMode ? 'text-purple-500/10' : 'text-pink-400/15'}`}
-          animate={{ y: [10, -10, 10] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        >
-          {'}'}
-        </motion.div>
-        
-        {/* Abstract dots pattern */}
-        <div className="absolute inset-0 opacity-[0.15]"
-          style={{
-            backgroundImage: `radial-gradient(circle at 20% 80%, currentColor 1px, transparent 1px),
-                             radial-gradient(circle at 80% 20%, currentColor 1px, transparent 1px),
-                             radial-gradient(circle at 40% 40%, currentColor 1px, transparent 1px)`,
-            backgroundSize: '100px 100px, 150px 150px, 80px 80px'
-          }}
-        />
-        
-        {/* Decorative line elements */}
-        <svg className="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="lineGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={isDarkMode ? "#a855f7" : "#f97316"} stopOpacity="0.3" />
-              <stop offset="100%" stopColor={isDarkMode ? "#3b82f6" : "#ec4899"} stopOpacity="0.1" />
-            </linearGradient>
-          </defs>
-          <motion.path
-            d="M 0,200 Q 400,100 800,300 T 1600,200"
-            fill="none"
-            stroke="url(#lineGrad1)"
-            strokeWidth="2"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 3, ease: "easeInOut" }}
-          />
-          <motion.path
-            d="M 0,600 Q 500,500 1000,700 T 2000,600"
-            fill="none"
-            stroke="url(#lineGrad1)"
-            strokeWidth="1.5"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 3, ease: "easeInOut", delay: 0.5 }}
-          />
-        </svg>
+        {/* Ambient glow orbs behind rain */}
+        <div className="absolute inset-0 opacity-15">
+          <div className={`absolute top-[20%] left-[10%] w-[400px] h-[400px] rounded-full blur-[100px] animate-pulse transition-colors duration-1000 ${isDarkMode ? 'bg-blue-600/30' : 'bg-slate-400/20'}`} style={{ animationDuration: '10s' }} />
+          <div className={`absolute bottom-[30%] right-[15%] w-[300px] h-[300px] rounded-full blur-[80px] animate-pulse transition-colors duration-1000 ${isDarkMode ? 'bg-cyan-600/20' : 'bg-slate-300/15'}`} style={{ animationDuration: '12s', animationDelay: '3s' }} />
+        </div>
       </div>
       
       {/* Mouse follower glow */}
@@ -883,8 +879,8 @@ export default function JoshuaEnhancedHub() {
           >
             {/* Rain effect inside the card */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              {[...Array(15)].map((_, i) => (
-                <RainDrop key={i} delay={i * 0.3} />
+              {[...Array(30)].map((_, i) => (
+                <RainDrop key={i} delay={i * 0.15} />
               ))}
             </div>
             
