@@ -2,8 +2,9 @@
 <html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
-    <title>About — jbhicks.dev</title>
+    <title>Joshua Hicks — Resume | jbhicks.dev</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Resume for Joshua Hicks — Go engineer and technical lead in Phoenix, AZ." />
     <link href="/static/tailwind.css" rel="stylesheet" type="text/css" />
     <link href="/static/daisyui.min.css" rel="stylesheet" type="text/css" />
     <script src="/static/htmx.min.js"></script>
@@ -22,6 +23,10 @@
         --card-border: #cbd5e1;
         --toggle-bg: rgba(255, 255, 255, 0.8);
         --toggle-border: #cbd5e1;
+        --link-color: #059669;
+        --skill-bg: #e2e8f0;
+        --skill-text: #1e293b;
+        --rule-color: #cbd5e1;
       }
 
       [data-theme="dark"] {
@@ -36,23 +41,159 @@
         --card-border: #374151;
         --toggle-bg: rgba(31, 41, 55, 0.8);
         --toggle-border: #4b5563;
+        --link-color: #c084fc;
+        --skill-bg: #374151;
+        --skill-text: #f9fafb;
+        --rule-color: #4b5563;
       }
 
       body {
-        background: linear-gradient(to bottom right, var(--bg-gradient-from), var(--bg-gradient-via), var(--bg-gradient-to));
+        background: linear-gradient(
+          to bottom right,
+          var(--bg-gradient-from),
+          var(--bg-gradient-via),
+          var(--bg-gradient-to)
+        );
         min-height: 100vh;
       }
 
       .theme-text-primary { color: var(--text-primary); }
       .theme-text-secondary { color: var(--text-secondary); }
       .theme-text-muted { color: var(--text-muted); }
+      .theme-accent-1 { color: var(--accent-1); }
+      .theme-card-bg { background-color: var(--card-bg); }
+      .theme-card-border { border-color: var(--card-border); }
       .theme-toggle-bg { background-color: var(--toggle-bg); }
       .theme-toggle-border { border-color: var(--toggle-border); }
+      .theme-link { color: var(--link-color); }
+      .theme-skill {
+        background-color: var(--skill-bg);
+        color: var(--skill-text);
+      }
+      .theme-rule { border-color: var(--rule-color); }
+
+      .resume-section + .resume-section {
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--rule-color);
+      }
+
+      .job + .job {
+        margin-top: 1.25rem;
+      }
+
+      .skill-chip {
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        margin: 0.2rem;
+        border-radius: 9999px;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      /* Print / Save-as-PDF */
+      @media print {
+        @page {
+          margin: 0.5in;
+          size: letter;
+        }
+
+        html,
+        body {
+          background: #fff !important;
+          color: #111 !important;
+          min-height: auto;
+          font-size: 11pt;
+          line-height: 1.35;
+        }
+
+        #theme-toggle,
+        [hx-get="/templates/nav-bar.html"],
+        nav,
+        .no-print {
+          display: none !important;
+        }
+
+        .container {
+          max-width: 100% !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+
+        .resume-card {
+          background: #fff !important;
+          border: none !important;
+          box-shadow: none !important;
+          border-radius: 0 !important;
+          padding: 0 !important;
+        }
+
+        .theme-text-primary,
+        .theme-text-secondary,
+        .theme-text-muted,
+        .theme-accent-1,
+        .theme-link,
+        a {
+          color: #111 !important;
+        }
+
+        a {
+          text-decoration: none;
+        }
+
+        .theme-skill {
+          background: #eee !important;
+          color: #111 !important;
+          border: 1px solid #ccc;
+        }
+
+        .theme-rule,
+        .resume-section + .resume-section {
+          border-color: #ccc !important;
+        }
+
+        .resume-section + .resume-section {
+          margin-top: 0.85rem;
+          padding-top: 0.75rem;
+        }
+
+        .job + .job {
+          margin-top: 0.75rem;
+        }
+
+        h1 {
+          font-size: 22pt !important;
+          margin-bottom: 0.25rem !important;
+        }
+
+        h2 {
+          font-size: 12pt !important;
+          margin-bottom: 0.4rem !important;
+          color: #111 !important;
+        }
+
+        ul {
+          margin-top: 0.25rem !important;
+          margin-bottom: 0 !important;
+        }
+
+        li {
+          margin-bottom: 0.1rem;
+        }
+
+        .print-tight {
+          margin-bottom: 0.35rem !important;
+        }
+      }
     </style>
   </head>
 
   <body class="relative overflow-x-hidden transition-all duration-700">
-    <button id="theme-toggle" class="fixed top-4 right-4 z-50 p-3 rounded-full backdrop-blur-sm border shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl theme-toggle-bg theme-toggle-border">
+    <button
+      id="theme-toggle"
+      class="fixed top-4 right-4 z-50 p-3 rounded-full backdrop-blur-sm border shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl theme-toggle-bg theme-toggle-border no-print"
+      aria-label="Toggle color theme"
+    >
       <svg id="sun-icon" class="w-5 h-5 text-amber-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
       </svg>
@@ -95,35 +236,217 @@
       hx-get="/templates/nav-bar.html"
       hx-trigger="load"
       hx-swap="innerHTML"
+      class="no-print"
     ></div>
 
-    <div class="container mx-auto px-4 py-8 relative z-10 max-w-2xl">
-      <div class="rounded-box bg-base-200 p-6 md:p-8">
-        <h1 class="text-3xl font-bold mb-1 transition-colors duration-700 theme-text-primary">Joshua Hicks</h1>
-        <p class="mb-4 transition-colors duration-700 theme-text-secondary">Phoenix, AZ. Go engineer.</p>
-        <p class="mb-6 transition-colors duration-700 theme-text-secondary">Army veteran. Lead Software Engineer at American Veterans Rebuilding.</p>
+    <div class="container mx-auto px-4 py-8 relative z-10 max-w-3xl">
+      <article class="resume-card rounded-box border p-6 md:p-8 theme-card-bg theme-card-border shadow-lg">
+        <header class="print-tight">
+          <h1 class="text-3xl md:text-4xl font-bold transition-colors duration-700 theme-text-primary">
+            Joshua Hicks
+          </h1>
 
-        <h2 class="text-xl font-bold mb-3">Production</h2>
-        <ul class="list-disc list-inside space-y-2 mb-6">
-          <li>
-            <a class="link" href="https://avrnpo.org">avrnpo.org</a>
-            — veterans nonprofit site
-          </li>
-          <li>
-            <a class="link" href="https://github.com/jbhicks/sound-cistern">sound-cistern</a>
-            — SoundCloud feed filter
-          </li>
-          <li>
-            <a class="link" href="https://github.com/jbhicks/media-manager">media-manager</a>
-            — desktop app
-          </li>
-        </ul>
+          <p class="mt-3 transition-colors duration-700 theme-text-secondary leading-relaxed">
+            Go engineer and technical lead in Phoenix. Army veteran. Builds production systems at work and for community:
+            lead software engineer for American Veterans Rebuilding (<a class="theme-link underline" href="https://avrnpo.org">avrnpo.org</a>),
+            plus desktop and local-first Go apps on the side. Currently Technical Lead / Pega Senior System Architect at
+            Charles Schwab; also shipping Go tooling (including an Atlassian MCP server) and open side projects.
+          </p>
 
-        <p>
-          GitHub:
-          <a class="link" href="https://github.com/jbhicks">https://github.com/jbhicks</a>
-        </p>
-      </div>
+          <p class="mt-4 transition-colors duration-700 theme-text-secondary">
+            <a
+              class="theme-link underline font-medium select-all"
+              href="mailto:joshua.brock.hicks@gmail.com"
+            >joshua.brock.hicks@gmail.com</a>
+          </p>
+
+          <p class="mt-2 text-sm md:text-base transition-colors duration-700 theme-text-muted flex flex-wrap gap-x-2 gap-y-1">
+            <a class="theme-link underline" href="https://jbhicks.dev">https://jbhicks.dev</a>
+            <span aria-hidden="true">·</span>
+            <a class="theme-link underline" href="https://github.com/jbhicks">https://github.com/jbhicks</a>
+            <span aria-hidden="true">·</span>
+            <a class="theme-link underline" href="https://www.linkedin.com/in/joshuabhicks">https://www.linkedin.com/in/joshuabhicks</a>
+            <span aria-hidden="true">·</span>
+            <span>Phoenix, AZ</span>
+          </p>
+        </header>
+
+        <section class="resume-section" aria-labelledby="experience-heading">
+          <h2 id="experience-heading" class="text-xl font-bold theme-accent-1 transition-colors duration-700">
+            Experience
+          </h2>
+
+          <div class="job">
+            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
+              Technical Lead — Charles Schwab
+              <span class="font-normal theme-text-muted"> · Phoenix · Feb 2022–Present</span>
+            </h3>
+            <p class="theme-text-secondary transition-colors duration-700">
+              Lead Pega PRPC engineering for production platforms at Charles Schwab.
+            </p>
+            <ul class="list-disc list-inside mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
+              <li>Lead Pega PRPC engineering across design, delivery, and system architecture.</li>
+              <li>Built an Atlassian MCP server in Go (listable privately; internal tooling).</li>
+              <li>Role skills include Pega PRPC, Node.js, React.js, AngularJS, and Java.</li>
+            </ul>
+          </div>
+
+          <div class="job">
+            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
+              Software Engineer / Pega SSA — Charles Schwab
+              <span class="font-normal theme-text-muted"> · Nov 2015–Sep 2022</span>
+            </h3>
+            <p class="theme-text-secondary transition-colors duration-700">
+              Research, design, and implement Pega PRPC solutions for enterprise workflows.
+            </p>
+            <ul class="list-disc list-inside mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
+              <li>Researched and designed Pega PRPC solutions for business process automation.</li>
+              <li>Implemented and maintained production PRPC applications as a Senior System Architect.</li>
+            </ul>
+          </div>
+
+          <div class="job">
+            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
+              Lead Software Engineer — American Veterans Rebuilding (501c3)
+              <span class="font-normal theme-text-muted"> · Phoenix · Parallel</span>
+            </h3>
+            <p class="theme-text-secondary transition-colors duration-700">
+              Build and run the nonprofit’s public site and donation stack.
+            </p>
+            <ul class="list-disc list-inside mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
+              <li>Built and operate <a class="theme-link underline" href="https://avrnpo.org">avrnpo.org</a> on Go / PocketBase CMS with donations.</li>
+            </ul>
+          </div>
+
+          <div class="job">
+            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
+              Pega System Architect — Agora Group Inc. (Virtusa)
+              <span class="font-normal theme-text-muted"> · Mar 2015–Nov 2015</span>
+            </h3>
+            <p class="theme-text-secondary transition-colors duration-700">
+              Pega System Architect delivering PRPC solutions on client engagements.
+            </p>
+          </div>
+
+          <div class="job">
+            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
+              Information Assurance Specialist — DISA
+              <span class="font-normal theme-text-muted"> · Jun 2014–Mar 2015</span>
+            </h3>
+            <p class="theme-text-secondary transition-colors duration-700">
+              Hardened classified server fleets and automated patching for DISA.
+            </p>
+            <ul class="list-disc list-inside mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
+              <li>STIG review of 200+ classified servers (Linux / AIX / Solaris).</li>
+              <li>Automated patching pipeline for sustained compliance.</li>
+            </ul>
+          </div>
+
+          <div class="job">
+            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
+              Research Assistant — UTEP
+              <span class="font-normal theme-text-muted"> · Jan 2012–Apr 2014</span>
+            </h3>
+            <p class="theme-text-secondary transition-colors duration-700">
+              Web and Semantic Web research with Drupal, PHP, Groovy, OWL, and XML.
+            </p>
+            <ul class="list-disc list-inside mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
+              <li>Built and maintained web / Semantic Web prototypes using Drupal, PHP, Groovy, OWL, and XML.</li>
+            </ul>
+          </div>
+
+          <div class="job">
+            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
+              Infantry Team Leader — US Army
+              <span class="font-normal theme-text-muted"> · 2007–2009</span>
+            </h3>
+            <p class="theme-text-secondary transition-colors duration-700">
+              Led a small infantry team in training and operations.
+            </p>
+          </div>
+
+          <div class="job">
+            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
+              Infantry Rifleman — US Army
+              <span class="font-normal theme-text-muted"> · 2003–2007</span>
+            </h3>
+            <p class="theme-text-secondary transition-colors duration-700">
+              Served as an infantry rifleman.
+            </p>
+          </div>
+        </section>
+
+        <section class="resume-section" aria-labelledby="projects-heading">
+          <h2 id="projects-heading" class="text-xl font-bold theme-accent-1 transition-colors duration-700">
+            Projects
+          </h2>
+          <ul class="list-disc list-inside space-y-2 theme-text-secondary transition-colors duration-700">
+            <li>
+              <a class="theme-link underline font-medium" href="https://avrnpo.org">avrnpo.org</a>
+              — Go / PocketBase CMS and donations for American Veterans Rebuilding.
+            </li>
+            <li>
+              <span class="font-medium theme-text-primary">Atlassian MCP</span>
+              — Go MCP server for Atlassian tooling at Schwab (listable privately; no public repo).
+            </li>
+            <li>
+              <a class="theme-link underline font-medium" href="https://github.com/jbhicks/media-manager">media-manager</a>
+              — desktop media management app.
+            </li>
+            <li>
+              <a class="theme-link underline font-medium" href="https://github.com/jbhicks/sound-cistern">sound-cistern</a>
+              — SoundCloud feed filter.
+            </li>
+            <li>
+              <a class="theme-link underline font-medium" href="https://github.com/jbhicks/clai">clai</a>
+              — open side project.
+            </li>
+          </ul>
+        </section>
+
+        <section class="resume-section" aria-labelledby="skills-heading">
+          <h2 id="skills-heading" class="text-xl font-bold theme-accent-1 transition-colors duration-700">
+            Skills
+          </h2>
+          <p class="mt-1 flex flex-wrap" role="list">
+            <span class="skill-chip theme-skill" role="listitem">Go</span>
+            <span class="skill-chip theme-skill" role="listitem">Pega/PRPC</span>
+            <span class="skill-chip theme-skill" role="listitem">HTMX</span>
+            <span class="skill-chip theme-skill" role="listitem">PocketBase</span>
+            <span class="skill-chip theme-skill" role="listitem">Postgres</span>
+            <span class="skill-chip theme-skill" role="listitem">Linux</span>
+            <span class="skill-chip theme-skill" role="listitem">MCP</span>
+            <span class="skill-chip theme-skill" role="listitem">Fyne</span>
+            <span class="skill-chip theme-skill" role="listitem">Node.js</span>
+            <span class="skill-chip theme-skill" role="listitem">React.js</span>
+            <span class="skill-chip theme-skill" role="listitem">Java</span>
+            <span class="skill-chip theme-skill" role="listitem">JavaScript</span>
+            <span class="skill-chip theme-skill" role="listitem">Python</span>
+            <span class="skill-chip theme-skill" role="listitem">Git</span>
+            <span class="skill-chip theme-skill" role="listitem">CI/CD</span>
+          </p>
+        </section>
+
+        <section class="resume-section" aria-labelledby="certs-heading">
+          <h2 id="certs-heading" class="text-xl font-bold theme-accent-1 transition-colors duration-700">
+            Certifications
+          </h2>
+          <ul class="list-disc list-inside space-y-1 theme-text-secondary transition-colors duration-700">
+            <li>Pega CSSA — May 2016</li>
+            <li>Pega CSA — May 2015 (credential S-128275)</li>
+          </ul>
+        </section>
+
+        <section class="resume-section" aria-labelledby="education-heading">
+          <h2 id="education-heading" class="text-xl font-bold theme-accent-1 transition-colors duration-700">
+            Education
+          </h2>
+          <p class="theme-text-secondary transition-colors duration-700">
+            <span class="font-semibold theme-text-primary">University of Texas at El Paso</span>
+            — B.S. Computer Science, 2014; Honors Cum Laude
+          </p>
+        </section>
+      </article>
     </div>
   </body>
 </html>
