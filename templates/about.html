@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <title>Joshua Hicks — Resume | jbhicks.dev</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Resume for Joshua Hicks — Go engineer and technical lead in Phoenix, AZ." />
+    <meta name="description" content="Resume for Joshua Hicks — Sr Manager, Software Development & Engineering (technical lead / IC track) in Phoenix, AZ." />
     <link href="/static/tailwind.css" rel="stylesheet" type="text/css" />
     <link href="/static/daisyui.min.css" rel="stylesheet" type="text/css" />
     <script src="/static/htmx.min.js"></script>
@@ -89,6 +89,18 @@
         border-radius: 9999px;
         font-size: 0.85rem;
         font-weight: 500;
+      }
+
+      .skill-group-label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-top: 0.6rem;
+        margin-bottom: 0.15rem;
+      }
+
+      .skill-group-label:first-child {
+        margin-top: 0;
       }
 
       /* Print / Save-as-PDF */
@@ -247,10 +259,11 @@
           </h1>
 
           <p class="mt-3 transition-colors duration-700 theme-text-secondary leading-relaxed">
-            Go engineer and technical lead in Phoenix. Army veteran. Builds production systems at work and for community:
-            lead software engineer for American Veterans Rebuilding (<a class="theme-link underline" href="https://avrnpo.org">avrnpo.org</a>),
-            plus desktop and local-first Go apps on the side. Currently Technical Lead / Pega Senior System Architect at
-            Charles Schwab; also shipping Go tooling (including an Atlassian MCP server) and open side projects.
+            Sr Manager, Software Development &amp; Engineering (technical lead / IC track) in Phoenix.
+            Army veteran. Java/Spring · Go · TypeScript · Kubernetes · AI developer tooling (MCP).
+            Decade of enterprise BPM/workflow architecture (Pega CSSA).
+            Also Lead Software Engineer for American Veterans Rebuilding
+            (<a class="theme-link underline" href="https://avrnpo.org">avrnpo.org</a>).
           </p>
 
           <p class="mt-4 transition-colors duration-700 theme-text-secondary">
@@ -278,30 +291,44 @@
 
           <div class="job">
             <h3 class="font-semibold theme-text-primary transition-colors duration-700">
-              Technical Lead — Charles Schwab
-              <span class="font-normal theme-text-muted"> · Phoenix · Feb 2022–Present</span>
+              Sr Manager, Software Development &amp; Engineering Lead — Charles Schwab
+              <span class="font-normal theme-text-muted"> · Phoenix · Jan 2022 – Present</span>
             </h3>
+            <p class="theme-text-muted text-sm transition-colors duration-700">
+              (technical lead / IC track)
+            </p>
             <p class="theme-text-secondary transition-colors duration-700">
-              Lead Pega PRPC engineering for production platforms at Charles Schwab.
+              Enterprise BPM / workflow case-management for regulated brokerage and wealth-transfer ops;
+              next-gen Spring BFF + React ops workflow platform replacing a legacy commercial BPM suite.
+              Schwab tenure: Feb 2015 – Present (contract to hire; employee Nov 2015).
             </p>
             <ul class="list-disc list-inside mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
-              <li>Lead Pega PRPC engineering across design, delivery, and system architecture.</li>
-              <li>Built an Atlassian MCP server in Go (listable privately; internal tooling).</li>
-              <li>Role skills include Pega PRPC, Node.js, React.js, AngularJS, and Java.</li>
+              <li>Lead a four-engineer onshore/offshore delivery pod; author engineering standards and onboarding curriculum adopted across multiple delivery teams.</li>
+              <li>Drove a multi-year platform code-quality program to completion (~two years).</li>
+              <li>Eliminated a class of production failure by replacing a legacy background-agent pattern with a queue-processor architecture (removed record-lock collisions during concurrent child-record creation).</li>
+              <li>Built and shipped a Go MCP (Model Context Protocol) server exposing ~60 tools across Jira, Confluence, and Zephyr to AI coding assistants (VS Code / IntelliJ); prototype to governed deploy in 12 months (~14k prod / ~15.5k test Go lines; 279 tests).</li>
+              <li>Led or supported six platform migrations (BPM suite upgrade, SCM to GitHub, CI/CD re-platform, BPMN on Kubernetes, logging→cloud observability, FE framework conversion).</li>
+              <li>Owned WCAG/ARIA accessibility remediation workstream.</li>
+              <li>Carried two new technologies through full internal architecture and security review.</li>
             </ul>
+            <p class="mt-2 text-sm theme-text-muted transition-colors duration-700">
+              Java 21 · Spring Boot · OAuth2/OIDC · Go · TypeScript/React · PostgreSQL · Kafka · Camunda (BPMN) · Kubernetes/GKE · Docker · GitHub Actions · Playwright/Vitest
+            </p>
           </div>
 
           <div class="job">
             <h3 class="font-semibold theme-text-primary transition-colors duration-700">
-              Software Engineer / Pega SSA — Charles Schwab
-              <span class="font-normal theme-text-muted"> · Nov 2015–Sep 2022</span>
+              Software Engineer / Pega Senior System Architect — Charles Schwab
+              <span class="font-normal theme-text-muted"> · Phoenix · Nov 2015 – Jan 2022</span>
             </h3>
-            <p class="theme-text-secondary transition-colors duration-700">
-              Research, design, and implement Pega PRPC solutions for enterprise workflows.
+            <p class="theme-text-muted text-sm transition-colors duration-700">
+              On-site contractor from Feb 2015; employee Nov 2015. Leading engineers since Apr 2018 (before formal title).
             </p>
             <ul class="list-disc list-inside mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
-              <li>Researched and designed Pega PRPC solutions for business process automation.</li>
-              <li>Implemented and maintained production PRPC applications as a Senior System Architect.</li>
+              <li>Domains: account opening; enterprise BPM case-management; options-supervision compliance; work-prioritization/SLA engine; wealth-transfer ops modernization; FE web components standards; Node.js service virtualization.</li>
+              <li>Authored enterprise solution architecture within ~18 months of joining.</li>
+              <li>Wrote org-adopted engineering standards and ~14-guide developer onboarding path.</li>
+              <li>Designed succession for the lead role.</li>
             </ul>
           </div>
 
@@ -320,24 +347,14 @@
 
           <div class="job">
             <h3 class="font-semibold theme-text-primary transition-colors duration-700">
-              Pega System Architect — Agora Group Inc. (Virtusa)
-              <span class="font-normal theme-text-muted"> · Mar 2015–Nov 2015</span>
-            </h3>
-            <p class="theme-text-secondary transition-colors duration-700">
-              Pega System Architect delivering PRPC solutions on client engagements.
-            </p>
-          </div>
-
-          <div class="job">
-            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
               Information Assurance Specialist — DISA
-              <span class="font-normal theme-text-muted"> · Jun 2014–Mar 2015</span>
+              <span class="font-normal theme-text-muted"> · Jun 2014 – early 2015</span>
             </h3>
             <p class="theme-text-secondary transition-colors duration-700">
               Hardened classified server fleets and automated patching for DISA.
             </p>
             <ul class="list-disc list-inside mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
-              <li>STIG review of 200+ classified servers (Linux / AIX / Solaris).</li>
+              <li>Managed security posture of 500+ AIX/Solaris/Linux servers and VMs against DoD STIGs.</li>
               <li>Automated patching pipeline for sustained compliance.</li>
             </ul>
           </div>
@@ -345,34 +362,25 @@
           <div class="job">
             <h3 class="font-semibold theme-text-primary transition-colors duration-700">
               Research Assistant — UTEP
-              <span class="font-normal theme-text-muted"> · Jan 2012–Apr 2014</span>
+              <span class="font-normal theme-text-muted"> · Jan 2012 – Apr 2014</span>
             </h3>
             <p class="theme-text-secondary transition-colors duration-700">
               Web and Semantic Web research with Drupal, PHP, Groovy, OWL, and XML.
             </p>
             <ul class="list-disc list-inside mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
-              <li>Built and maintained web / Semantic Web prototypes using Drupal, PHP, Groovy, OWL, and XML.</li>
+              <li>Drupal/PHP modules importing 20,000+ user profiles over REST; Groovy transforms of XML/relational data into semantic-web formats.</li>
             </ul>
           </div>
 
           <div class="job">
             <h3 class="font-semibold theme-text-primary transition-colors duration-700">
-              Infantry Team Leader — US Army
-              <span class="font-normal theme-text-muted"> · 2007–2009</span>
+              Infantry Team Leader — U.S. Army
+              <span class="font-normal theme-text-muted"> · Oct 2003 – Nov 2009</span>
             </h3>
-            <p class="theme-text-secondary transition-colors duration-700">
-              Led a small infantry team in training and operations.
-            </p>
-          </div>
-
-          <div class="job">
-            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
-              Infantry Rifleman — US Army
-              <span class="font-normal theme-text-muted"> · 2003–2007</span>
-            </h3>
-            <p class="theme-text-secondary transition-colors duration-700">
-              Served as an infantry rifleman.
-            </p>
+            <ul class="list-disc list-inside mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
+              <li>Responsible for welfare, fitness, morale, and discipline of a four-person team; primary instructor/advisor in tactics, personnel management, and junior leader development.</li>
+              <li>Earlier service as infantry rifleman within the same enlistment.</li>
+            </ul>
           </div>
         </section>
 
@@ -387,7 +395,9 @@
             </li>
             <li>
               <span class="font-medium theme-text-primary">Atlassian MCP</span>
-              — Go MCP server for Atlassian tooling at Schwab (listable privately; no public repo).
+              — Go MCP server exposing ~60 tools (Jira, Confluence, Zephyr) to AI coding assistants;
+              ~14k prod / ~15.5k test Go lines; 279 tests; prototype to governed deploy in 12 months
+              (internal tooling; no public repo).
             </li>
             <li>
               <a class="theme-link underline font-medium" href="https://github.com/jbhicks/media-manager">media-manager</a>
@@ -408,23 +418,35 @@
           <h2 id="skills-heading" class="text-xl font-bold theme-accent-1 transition-colors duration-700">
             Skills
           </h2>
-          <p class="mt-1 flex flex-wrap" role="list">
-            <span class="skill-chip theme-skill" role="listitem">Go</span>
-            <span class="skill-chip theme-skill" role="listitem">Pega/PRPC</span>
-            <span class="skill-chip theme-skill" role="listitem">HTMX</span>
-            <span class="skill-chip theme-skill" role="listitem">PocketBase</span>
-            <span class="skill-chip theme-skill" role="listitem">Postgres</span>
-            <span class="skill-chip theme-skill" role="listitem">Linux</span>
-            <span class="skill-chip theme-skill" role="listitem">MCP</span>
-            <span class="skill-chip theme-skill" role="listitem">Fyne</span>
-            <span class="skill-chip theme-skill" role="listitem">Node.js</span>
-            <span class="skill-chip theme-skill" role="listitem">React.js</span>
-            <span class="skill-chip theme-skill" role="listitem">Java</span>
-            <span class="skill-chip theme-skill" role="listitem">JavaScript</span>
-            <span class="skill-chip theme-skill" role="listitem">Python</span>
-            <span class="skill-chip theme-skill" role="listitem">Git</span>
-            <span class="skill-chip theme-skill" role="listitem">CI/CD</span>
-          </p>
+          <div class="mt-1">
+            <span class="skill-group-label theme-text-muted">Platform / backend</span>
+            <p class="flex flex-wrap" role="list">
+              <span class="skill-chip theme-skill" role="listitem">Java 21</span>
+              <span class="skill-chip theme-skill" role="listitem">Spring Boot</span>
+              <span class="skill-chip theme-skill" role="listitem">Go</span>
+              <span class="skill-chip theme-skill" role="listitem">OAuth2/OIDC</span>
+              <span class="skill-chip theme-skill" role="listitem">PostgreSQL</span>
+              <span class="skill-chip theme-skill" role="listitem">Kafka</span>
+              <span class="skill-chip theme-skill" role="listitem">Camunda (BPMN)</span>
+              <span class="skill-chip theme-skill" role="listitem">Pega CSSA</span>
+            </p>
+            <span class="skill-group-label theme-text-muted">Frontend / delivery</span>
+            <p class="flex flex-wrap" role="list">
+              <span class="skill-chip theme-skill" role="listitem">TypeScript/React</span>
+              <span class="skill-chip theme-skill" role="listitem">Kubernetes/GKE</span>
+              <span class="skill-chip theme-skill" role="listitem">Docker</span>
+              <span class="skill-chip theme-skill" role="listitem">GitHub Actions</span>
+              <span class="skill-chip theme-skill" role="listitem">Playwright/Vitest</span>
+              <span class="skill-chip theme-skill" role="listitem">MCP</span>
+            </p>
+            <span class="skill-group-label theme-text-muted">Side / local-first</span>
+            <p class="flex flex-wrap" role="list">
+              <span class="skill-chip theme-skill" role="listitem">PocketBase</span>
+              <span class="skill-chip theme-skill" role="listitem">HTMX</span>
+              <span class="skill-chip theme-skill" role="listitem">Fyne</span>
+              <span class="skill-chip theme-skill" role="listitem">Linux</span>
+            </p>
+          </div>
         </section>
 
         <section class="resume-section" aria-labelledby="certs-heading">
