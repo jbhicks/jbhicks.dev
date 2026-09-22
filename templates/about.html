@@ -12,48 +12,41 @@
 
     <style>
       :root {
-        --bg-gradient-from: #f1f5f9;
-        --bg-gradient-via: #e2e8f0;
-        --bg-gradient-to: #cbd5e1;
+        --bg-paper: #fafaf7;
         --text-primary: #1e293b;
         --text-secondary: #475569;
         --text-muted: #64748b;
         --accent-1: #047857;
-        --card-bg: rgba(255, 255, 255, 0.8);
-        --card-border: #cbd5e1;
-        --toggle-bg: rgba(255, 255, 255, 0.8);
-        --toggle-border: #cbd5e1;
+        --card-bg: #ffffff;
+        --card-border: #e5e5e0;
+        --toggle-bg: rgba(255, 255, 255, 0.9);
+        --toggle-border: #e5e5e0;
         --link-color: #047857;
-        --skill-bg: #e2e8f0;
+        --skill-bg: #f0f0eb;
         --skill-text: #1e293b;
-        --rule-color: #cbd5e1;
+        --rule-color: #e5e5e0;
+        --section-underline: #047857;
       }
 
       [data-theme="dark"] {
-        --bg-gradient-from: #111827;
-        --bg-gradient-via: #1f2937;
-        --bg-gradient-to: #374151;
+        --bg-paper: #0b0b0b;
         --text-primary: #f9fafb;
         --text-secondary: #e5e7eb;
         --text-muted: #9ca3af;
         --accent-1: #34d399;
-        --card-bg: rgba(17, 24, 39, 0.8);
-        --card-border: #374151;
-        --toggle-bg: rgba(31, 41, 55, 0.8);
-        --toggle-border: #4b5563;
+        --card-bg: #141414;
+        --card-border: #2a2a2a;
+        --toggle-bg: rgba(31, 41, 55, 0.9);
+        --toggle-border: #374151;
         --link-color: #6ee7b7;
-        --skill-bg: #374151;
+        --skill-bg: #1f1f1f;
         --skill-text: #f9fafb;
-        --rule-color: #4b5563;
+        --rule-color: #2a2a2a;
+        --section-underline: #34d399;
       }
 
       body {
-        background: linear-gradient(
-          to bottom right,
-          var(--bg-gradient-from),
-          var(--bg-gradient-via),
-          var(--bg-gradient-to)
-        );
+        background: var(--bg-paper);
         min-height: 100vh;
       }
 
@@ -72,14 +65,42 @@
       }
       .theme-rule { border-color: var(--rule-color); }
 
+      .resume-card {
+        box-shadow: none;
+      }
+
       .resume-section + .resume-section {
-        margin-top: 1.5rem;
-        padding-top: 1.25rem;
+        margin-top: 1.35rem;
+        padding-top: 1.1rem;
         border-top: 1px solid var(--rule-color);
       }
 
+      .resume-section h2 {
+        color: var(--text-primary);
+        padding-bottom: 0.25rem;
+        border-bottom: 2px solid var(--section-underline);
+        display: inline-block;
+        margin-bottom: 0.65rem;
+      }
+
       .job + .job {
-        margin-top: 1.25rem;
+        margin-top: 1.1rem;
+      }
+
+      .job--present {
+        margin-bottom: 0.15rem;
+      }
+
+      .job--present > h3 {
+        font-size: 1.05rem;
+      }
+
+      .job--earlier {
+        margin-top: 0.9rem;
+      }
+
+      .job--earlier + .job--earlier {
+        margin-top: 0.85rem;
       }
 
       .skill-chip {
@@ -95,8 +116,8 @@
         display: block;
         font-size: 0.8rem;
         font-weight: 600;
-        margin-top: 0.6rem;
-        margin-bottom: 0.15rem;
+        margin-top: 0.55rem;
+        margin-bottom: 0.1rem;
       }
 
       .skill-group-label:first-child {
@@ -106,7 +127,7 @@
       /* Print / Save-as-PDF */
       @media print {
         @page {
-          margin: 0.5in;
+          margin: 0.45in;
           size: letter;
         }
 
@@ -115,14 +136,15 @@
           background: #fff !important;
           color: #111 !important;
           min-height: auto;
-          font-size: 11pt;
-          line-height: 1.35;
+          font-size: 10.5pt;
+          line-height: 1.32;
         }
 
         #theme-toggle,
         [hx-get="/templates/nav-bar.html"],
         nav,
-        .no-print {
+        .no-print,
+        .print-hide {
           display: none !important;
         }
 
@@ -153,10 +175,30 @@
           text-decoration: none;
         }
 
-        .theme-skill {
-          background: #eee !important;
+        .skill-chip {
+          display: inline;
+          padding: 0;
+          margin: 0;
+          border-radius: 0;
+          background: transparent !important;
           color: #111 !important;
-          border: 1px solid #ccc;
+          border: none !important;
+          font-weight: 400;
+          font-size: inherit;
+        }
+
+        .skill-chip::after {
+          content: " · ";
+        }
+
+        .skill-chip:last-child::after {
+          content: "";
+        }
+
+        .theme-skill {
+          background: transparent !important;
+          color: #111 !important;
+          border: none;
         }
 
         .theme-rule,
@@ -164,37 +206,54 @@
           border-color: #ccc !important;
         }
 
-        .resume-section + .resume-section {
-          margin-top: 0.7rem;
-          padding-top: 0.6rem;
+        .resume-section h2 {
+          border-bottom-color: #333 !important;
+          color: #111 !important;
         }
 
-        .job + .job {
+        .resume-section + .resume-section {
           margin-top: 0.55rem;
+          padding-top: 0.45rem;
+        }
+
+        .job + .job,
+        .job--earlier + .job--earlier {
+          margin-top: 0.45rem;
+        }
+
+        .job--present {
+          margin-bottom: 0.1rem;
         }
 
         h1 {
-          font-size: 22pt !important;
-          margin-bottom: 0.25rem !important;
+          font-size: 20pt !important;
+          margin-bottom: 0.2rem !important;
         }
 
         h2 {
-          font-size: 12pt !important;
-          margin-bottom: 0.4rem !important;
+          font-size: 11pt !important;
+          margin-bottom: 0.3rem !important;
           color: #111 !important;
         }
 
         ul {
-          margin-top: 0.25rem !important;
+          margin-top: 0.2rem !important;
           margin-bottom: 0 !important;
+          list-style-position: outside;
+          padding-left: 1.15em;
         }
 
         li {
-          margin-bottom: 0.1rem;
+          margin-bottom: 0.08rem;
         }
 
         .print-tight {
-          margin-bottom: 0.35rem !important;
+          margin-bottom: 0.3rem !important;
+        }
+
+        .list-inside {
+          list-style-position: outside;
+          padding-left: 1.15em;
         }
       }
     </style>
@@ -252,7 +311,7 @@
     ></div>
 
     <div class="container mx-auto px-4 py-8 relative z-10 max-w-3xl">
-      <article class="resume-card rounded-box border p-6 md:p-8 theme-card-bg theme-card-border shadow-lg">
+      <article class="resume-card rounded-box border p-6 md:p-8 theme-card-bg theme-card-border">
         <header class="print-tight">
           <h1 class="text-3xl md:text-4xl font-bold transition-colors duration-700 theme-text-primary">
             Joshua Hicks
@@ -260,7 +319,7 @@
 
           <p class="mt-3 transition-colors duration-700 theme-text-secondary leading-relaxed">
             Sr Manager, Software Development &amp; Engineering (technical lead / IC track) in Phoenix.
-            Army veteran. Java/Spring · Go · TypeScript · Kubernetes · AI developer tooling (MCP).
+            Army veteran. Java/Spring · Go · TypeScript · Kubernetes · MCP.
             Decade of enterprise BPM/workflow architecture (Pega CSSA).
             Also Lead Software Engineer for American Veterans Rebuilding
             (<a class="theme-link underline" href="https://avrnpo.org">avrnpo.org</a>).
@@ -284,138 +343,8 @@
           </p>
         </header>
 
-        <section class="resume-section" aria-labelledby="experience-heading">
-          <h2 id="experience-heading" class="text-xl font-bold theme-accent-1 transition-colors duration-700">
-            Experience
-          </h2>
-
-          <div class="job">
-            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
-              Sr Manager, Software Development &amp; Engineering Lead — Charles Schwab
-              <span class="font-normal theme-text-muted"> · Phoenix · Jan 2022 – Present</span>
-            </h3>
-            <p class="theme-text-muted text-sm transition-colors duration-700">
-              (technical lead / IC track)
-            </p>
-            <p class="theme-text-secondary transition-colors duration-700">
-              Enterprise BPM / workflow case-management for regulated brokerage and wealth-transfer ops;
-              next-gen Spring BFF + React ops workflow platform replacing a legacy commercial BPM suite.
-              Schwab tenure: Feb 2015 – Present (contract to hire; employee Nov 2015).
-            </p>
-            <ul class="list-disc list-inside mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
-              <li>Lead a four-engineer onshore/offshore delivery pod; author engineering standards and onboarding curriculum adopted across multiple delivery teams.</li>
-              <li>Drove a multi-year platform code-quality program to completion (~two years).</li>
-              <li>Eliminated a class of production failure by replacing a legacy background-agent pattern with a queue-processor architecture (removed record-lock collisions during concurrent child-record creation).</li>
-              <li>Built and shipped a Go MCP (Model Context Protocol) server exposing ~60 tools across Jira, Confluence, and Zephyr to AI coding assistants (VS Code / IntelliJ); prototype to governed deploy in 12 months (~14k prod / ~15.5k test Go lines; 279 tests).</li>
-              <li>Led or supported six platform migrations (BPM suite upgrade, SCM to GitHub, CI/CD re-platform, BPMN on Kubernetes, logging→cloud observability, FE framework conversion).</li>
-              <li>Owned WCAG/ARIA accessibility remediation workstream.</li>
-              <li>Carried two new technologies through full internal architecture and security review.</li>
-            </ul>
-            <p class="mt-2 text-sm theme-text-muted transition-colors duration-700">
-              Java 21 · Spring Boot · OAuth2/OIDC · Go · TypeScript/React · PostgreSQL · Kafka · Camunda (BPMN) · Kubernetes/GKE · Docker · GitHub Actions · Playwright/Vitest
-            </p>
-          </div>
-
-          <div class="job">
-            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
-              Software Engineer / Pega Senior System Architect — Charles Schwab
-              <span class="font-normal theme-text-muted"> · Phoenix · Nov 2015 – Jan 2022</span>
-            </h3>
-            <p class="theme-text-muted text-sm transition-colors duration-700">
-              On-site contractor from Feb 2015; employee Nov 2015. Leading engineers since Apr 2018 (before formal title).
-            </p>
-            <ul class="list-disc list-inside mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
-              <li>Domains: account opening; enterprise BPM case-management; options-supervision compliance; work-prioritization/SLA engine; wealth-transfer ops modernization; FE web components standards; Node.js service virtualization.</li>
-              <li>Authored enterprise solution architecture within ~18 months of joining.</li>
-              <li>Wrote org-adopted engineering standards and ~14-guide developer onboarding path.</li>
-              <li>Designed succession for the lead role.</li>
-            </ul>
-          </div>
-
-          <div class="job">
-            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
-              Lead Software Engineer — American Veterans Rebuilding (501c3)
-              <span class="font-normal theme-text-muted"> · Phoenix · Parallel</span>
-            </h3>
-            <p class="theme-text-secondary transition-colors duration-700">
-              Build and run the nonprofit’s public site and donation stack.
-            </p>
-            <ul class="list-disc list-inside mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
-              <li>Built and operate <a class="theme-link underline" href="https://avrnpo.org">avrnpo.org</a> on Go / PocketBase CMS with donations.</li>
-            </ul>
-          </div>
-
-          <div class="job">
-            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
-              Information Assurance Specialist — DISA
-              <span class="font-normal theme-text-muted"> · Jun 2014 – early 2015</span>
-            </h3>
-            <p class="theme-text-secondary transition-colors duration-700">
-              Hardened classified server fleets and automated patching for DISA.
-            </p>
-            <ul class="list-disc list-inside mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
-              <li>Managed security posture of 500+ AIX/Solaris/Linux servers and VMs against DoD STIGs.</li>
-              <li>Automated patching pipeline for sustained compliance.</li>
-            </ul>
-          </div>
-
-          <div class="job">
-            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
-              Research Assistant — UTEP
-              <span class="font-normal theme-text-muted"> · Jan 2012 – Apr 2014</span>
-            </h3>
-            <p class="theme-text-secondary transition-colors duration-700">
-              Web and Semantic Web research with Drupal, PHP, Groovy, OWL, and XML.
-            </p>
-            <ul class="list-disc list-inside mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
-              <li>Drupal/PHP modules importing 20,000+ user profiles over REST; Groovy transforms of XML/relational data into semantic-web formats.</li>
-            </ul>
-          </div>
-
-          <div class="job">
-            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
-              Infantry Team Leader — U.S. Army
-              <span class="font-normal theme-text-muted"> · Oct 2003 – Nov 2009</span>
-            </h3>
-            <ul class="list-disc list-inside mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
-              <li>Responsible for welfare, fitness, morale, and discipline of a four-person team; primary instructor/advisor in tactics, personnel management, and junior leader development.</li>
-              <li>Earlier service as infantry rifleman within the same enlistment.</li>
-            </ul>
-          </div>
-        </section>
-
-        <section class="resume-section" aria-labelledby="projects-heading">
-          <h2 id="projects-heading" class="text-xl font-bold theme-accent-1 transition-colors duration-700">
-            Projects
-          </h2>
-          <ul class="list-disc list-inside space-y-2 theme-text-secondary transition-colors duration-700">
-            <li>
-              <a class="theme-link underline font-medium" href="https://avrnpo.org">avrnpo.org</a>
-              — Go / PocketBase CMS and donations for American Veterans Rebuilding.
-            </li>
-            <li>
-              <span class="font-medium theme-text-primary">Atlassian MCP</span>
-              — Go MCP server exposing ~60 tools (Jira, Confluence, Zephyr) to AI coding assistants;
-              ~14k prod / ~15.5k test Go lines; 279 tests; prototype to governed deploy in 12 months
-              (internal tooling; no public repo).
-            </li>
-            <li>
-              <a class="theme-link underline font-medium" href="https://github.com/jbhicks/media-manager">media-manager</a>
-              — desktop media management app.
-            </li>
-            <li>
-              <a class="theme-link underline font-medium" href="https://github.com/jbhicks/sound-cistern">sound-cistern</a>
-              — SoundCloud feed filter.
-            </li>
-            <li>
-              <a class="theme-link underline font-medium" href="https://github.com/jbhicks/clai">clai</a>
-              — open side project.
-            </li>
-          </ul>
-        </section>
-
         <section class="resume-section" aria-labelledby="skills-heading">
-          <h2 id="skills-heading" class="text-xl font-bold theme-accent-1 transition-colors duration-700">
+          <h2 id="skills-heading" class="text-xl font-bold transition-colors duration-700">
             Skills
           </h2>
           <div class="mt-1">
@@ -430,14 +359,17 @@
               <span class="skill-chip theme-skill" role="listitem">Camunda (BPMN)</span>
               <span class="skill-chip theme-skill" role="listitem">Pega CSSA</span>
             </p>
-            <span class="skill-group-label theme-text-muted">Frontend / delivery</span>
+            <span class="skill-group-label theme-text-muted">Infrastructure / delivery</span>
             <p class="flex flex-wrap" role="list">
-              <span class="skill-chip theme-skill" role="listitem">TypeScript/React</span>
               <span class="skill-chip theme-skill" role="listitem">Kubernetes/GKE</span>
               <span class="skill-chip theme-skill" role="listitem">Docker</span>
               <span class="skill-chip theme-skill" role="listitem">GitHub Actions</span>
-              <span class="skill-chip theme-skill" role="listitem">Playwright/Vitest</span>
               <span class="skill-chip theme-skill" role="listitem">MCP</span>
+            </p>
+            <span class="skill-group-label theme-text-muted">Frontend</span>
+            <p class="flex flex-wrap" role="list">
+              <span class="skill-chip theme-skill" role="listitem">TypeScript/React</span>
+              <span class="skill-chip theme-skill" role="listitem">Playwright/Vitest</span>
             </p>
             <span class="skill-group-label theme-text-muted">Side / local-first</span>
             <p class="flex flex-wrap" role="list">
@@ -449,18 +381,148 @@
           </div>
         </section>
 
+        <section class="resume-section" aria-labelledby="experience-heading">
+          <h2 id="experience-heading" class="text-xl font-bold transition-colors duration-700">
+            Experience
+          </h2>
+
+          <div class="job job--present">
+            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
+              Sr Manager, Software Development &amp; Engineering Lead — Charles Schwab
+              <span class="font-normal theme-text-muted"> · Phoenix · Jan 2022 – Present</span>
+            </h3>
+            <p class="theme-text-muted text-sm transition-colors duration-700">
+              (technical lead / IC track)
+            </p>
+            <p class="theme-text-secondary transition-colors duration-700">
+              Enterprise BPM / workflow case-management for regulated brokerage and wealth-transfer ops;
+              next-gen Spring BFF + React ops workflow platform replacing a legacy commercial BPM suite.
+              Schwab tenure: Feb 2015 – Present (contract to hire; employee Nov 2015).
+            </p>
+            <ul class="list-disc list-outside ml-5 mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
+              <li>Built and shipped a Go MCP (Model Context Protocol) server exposing ~60 tools across Jira, Confluence, and Zephyr to AI coding assistants (VS Code / IntelliJ); prototype to governed deploy in 12 months (~14k prod / ~15.5k test Go lines; 279 tests).</li>
+              <li>Eliminated a class of production failure by replacing a legacy background-agent pattern with a queue-processor architecture (removed record-lock collisions during concurrent child-record creation).</li>
+              <li>Led or supported six platform migrations (BPM suite upgrade, SCM to GitHub, CI/CD re-platform, BPMN on Kubernetes, logging→cloud observability, FE framework conversion).</li>
+              <li>Drove a multi-year platform code-quality program to completion (~two years).</li>
+              <li>Carried two new technologies through full internal architecture and security review.</li>
+              <li>Lead a four-engineer onshore/offshore delivery pod; author engineering standards and onboarding curriculum adopted across multiple delivery teams.</li>
+              <li class="print-hide">Owned WCAG/ARIA accessibility remediation workstream.</li>
+            </ul>
+            <p class="mt-2 text-sm theme-text-muted transition-colors duration-700 print-hide">
+              Java 21 · Spring Boot · OAuth2/OIDC · Go · TypeScript/React · PostgreSQL · Kafka · Camunda (BPMN) · Kubernetes/GKE · Docker · GitHub Actions · Playwright/Vitest
+            </p>
+          </div>
+
+          <div class="job job--earlier">
+            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
+              Software Engineer / Pega Senior System Architect — Charles Schwab
+              <span class="font-normal theme-text-muted"> · Phoenix · Nov 2015 – Jan 2022</span>
+            </h3>
+            <p class="theme-text-muted text-sm transition-colors duration-700">
+              On-site contractor from Feb 2015; employee Nov 2015. Leading engineers since Apr 2018 (before formal title).
+            </p>
+            <ul class="list-disc list-outside ml-5 mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
+              <li>Domains: account opening; enterprise BPM case-management; options-supervision compliance; work-prioritization/SLA engine; wealth-transfer ops modernization; FE web components standards; Node.js service virtualization.</li>
+              <li>Authored enterprise solution architecture within ~18 months of joining.</li>
+              <li>Wrote org-adopted engineering standards and ~14-guide developer onboarding path.</li>
+              <li class="print-hide">Designed succession for the lead role.</li>
+            </ul>
+          </div>
+
+          <div class="job job--earlier">
+            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
+              Lead Software Engineer — American Veterans Rebuilding (501c3)
+              <span class="font-normal theme-text-muted"> · Phoenix · Parallel</span>
+            </h3>
+            <p class="theme-text-secondary transition-colors duration-700">
+              Build and run the nonprofit’s public site and donation stack.
+            </p>
+            <ul class="list-disc list-outside ml-5 mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
+              <li>Built and operate <a class="theme-link underline" href="https://avrnpo.org">avrnpo.org</a> on Go / PocketBase CMS with donations.</li>
+            </ul>
+          </div>
+
+          <div class="job job--earlier">
+            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
+              Information Assurance Specialist — DISA
+              <span class="font-normal theme-text-muted"> · Jun 2014 – early 2015</span>
+            </h3>
+            <p class="theme-text-secondary transition-colors duration-700">
+              Hardened classified server fleets and automated patching for DISA.
+            </p>
+            <ul class="list-disc list-outside ml-5 mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
+              <li>Managed security posture of 500+ AIX/Solaris/Linux servers and VMs against DoD STIGs.</li>
+              <li>Automated patching pipeline for sustained compliance.</li>
+            </ul>
+          </div>
+
+          <div class="job job--earlier">
+            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
+              Research Assistant — UTEP
+              <span class="font-normal theme-text-muted"> · Jan 2012 – Apr 2014</span>
+            </h3>
+            <p class="theme-text-secondary transition-colors duration-700">
+              Web and Semantic Web research with Drupal, PHP, Groovy, OWL, and XML.
+            </p>
+            <ul class="list-disc list-outside ml-5 mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
+              <li>Drupal/PHP modules importing 20,000+ user profiles over REST; Groovy transforms of XML/relational data into semantic-web formats.</li>
+            </ul>
+          </div>
+
+          <div class="job job--earlier">
+            <h3 class="font-semibold theme-text-primary transition-colors duration-700">
+              Infantry Team Leader — U.S. Army
+              <span class="font-normal theme-text-muted"> · Oct 2003 – Nov 2009</span>
+            </h3>
+            <ul class="list-disc list-outside ml-5 mt-2 space-y-1 theme-text-secondary transition-colors duration-700">
+              <li>Led a four-person team; primary instructor/advisor in tactics, personnel management, and junior leader development.</li>
+              <li class="print-hide">Earlier service as infantry rifleman within the same enlistment.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="resume-section" aria-labelledby="projects-heading">
+          <h2 id="projects-heading" class="text-xl font-bold transition-colors duration-700">
+            Projects
+          </h2>
+          <ul class="list-disc list-outside ml-5 space-y-2 theme-text-secondary transition-colors duration-700">
+            <li>
+              <span class="font-medium theme-text-primary">Atlassian MCP</span>
+              — Go MCP server exposing ~60 tools (Jira, Confluence, Zephyr) to AI coding assistants;
+              ~14k prod / ~15.5k test Go lines; 279 tests; prototype to governed deploy in 12 months
+              (internal tooling; no public repo).
+            </li>
+            <li>
+              <a class="theme-link underline font-medium" href="https://avrnpo.org">avrnpo.org</a>
+              — Go / PocketBase CMS and donations for American Veterans Rebuilding.
+            </li>
+            <li class="print-hide">
+              <a class="theme-link underline font-medium" href="https://github.com/jbhicks/media-manager">media-manager</a>
+              — desktop media management app.
+            </li>
+            <li class="print-hide">
+              <a class="theme-link underline font-medium" href="https://github.com/jbhicks/sound-cistern">sound-cistern</a>
+              — SoundCloud feed filter.
+            </li>
+            <li class="print-hide">
+              <a class="theme-link underline font-medium" href="https://github.com/jbhicks/clai">clai</a>
+              — open side project.
+            </li>
+          </ul>
+        </section>
+
         <section class="resume-section" aria-labelledby="certs-heading">
-          <h2 id="certs-heading" class="text-xl font-bold theme-accent-1 transition-colors duration-700">
+          <h2 id="certs-heading" class="text-xl font-bold transition-colors duration-700">
             Certifications
           </h2>
-          <ul class="list-disc list-inside space-y-1 theme-text-secondary transition-colors duration-700">
+          <ul class="list-disc list-outside ml-5 space-y-1 theme-text-secondary transition-colors duration-700">
             <li>Pega CSSA — May 2016</li>
             <li>Pega CSA — May 2015 (credential S-128275)</li>
           </ul>
         </section>
 
         <section class="resume-section" aria-labelledby="education-heading">
-          <h2 id="education-heading" class="text-xl font-bold theme-accent-1 transition-colors duration-700">
+          <h2 id="education-heading" class="text-xl font-bold transition-colors duration-700">
             Education
           </h2>
           <p class="theme-text-secondary transition-colors duration-700">
