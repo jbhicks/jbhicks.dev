@@ -30,6 +30,12 @@ func setupRouter() *gin.Engine {
 		})
 	})
 
+	r.GET("/projects", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "projects.html", gin.H{
+			"title": "Projects — jbhicks.dev",
+		})
+	})
+
 	r.GET("/api/soundcloud/stream", handlers.HandleGetSoundcloudStream)
 	r.GET("/api/soundcloud/favorites", handlers.HandleGetSoundcloudFavorites)
 	r.GET("/api/news", handlers.HandleGetNews)
