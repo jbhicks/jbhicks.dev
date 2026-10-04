@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <title>Projects — jbhicks.dev</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Selected projects by Joshua Hicks — avrnpo.org, sound-cistern, and media-manager." />
+    <meta name="description" content="Selected projects by Joshua Hicks — clai, internal Atlassian MCP, avrnpo.org, sound-cistern, and media-manager." />
     <link href="/static/tailwind.css" rel="stylesheet" type="text/css" />
     <link href="/static/daisyui.min.css" rel="stylesheet" type="text/css" />
     <script src="/static/htmx.min.js"></script>
@@ -67,6 +67,10 @@
 
       .projects-card {
         box-shadow: none;
+      }
+
+      .case-study {
+        scroll-margin-top: 1.25rem;
       }
 
       .case-study + .case-study {
@@ -159,11 +163,63 @@
             Projects
           </h1>
           <p class="mt-3 transition-colors duration-700 theme-text-secondary leading-relaxed">
-            Selected production work: a veterans nonprofit site with donations, a SoundCloud feed filter, and a local-first desktop media library.
+            Selected work: clai, an internal Atlassian MCP server for AI coding assistants, a veterans nonprofit site with donations, a SoundCloud feed filter, and a local-first media stack with a desktop app and a download web server.
           </p>
         </header>
 
-        <article class="case-study mt-8" aria-labelledby="avrnpo-heading">
+
+        <article class="case-study mt-8" id="clai" aria-labelledby="clai-heading">
+          <figure class="mb-4">
+            <img
+              class="case-shot"
+              src="/static/projects/clai.png?v=1"
+              alt="clai Model Benchmarks web UI showing GPU metrics, model servers, and model downloads"
+              width="1905"
+              height="2053"
+              loading="lazy"
+            />
+          </figure>
+          <h2 id="clai-heading" class="text-xl font-bold transition-colors duration-700">
+            clai
+          </h2>
+          <p class="theme-text-secondary transition-colors duration-700">
+            Local-first AI chat client written in Go for an OpenAI-compatible llama.cpp server.
+          </p>
+          <p class="mt-2 flex flex-wrap" role="list" aria-label="Stack">
+            <span class="skill-chip theme-skill" role="listitem">Go</span>
+            <span class="skill-chip theme-skill" role="listitem">Bubble Tea</span>
+            <span class="skill-chip theme-skill" role="listitem">llama.cpp</span>
+            <span class="skill-chip theme-skill" role="listitem">HTTP / web UI</span>
+          </p>
+          <p class="mt-3 theme-text-secondary transition-colors duration-700 leading-relaxed">
+            The default interface is a Bubble Tea terminal UI; the optional HTTP service provides a web UI for model management and benchmarking. The project is available under the MIT license.
+          </p>
+          <p class="mt-3 text-sm theme-text-muted flex flex-wrap gap-x-3 gap-y-1">
+            <a class="theme-link underline font-medium" href="https://github.com/jbhicks/clai" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>
+          </p>
+        </article>
+
+        <article class="case-study mt-8" id="atlassian-mcp" aria-labelledby="atlassian-mcp-heading">
+          <h2 id="atlassian-mcp-heading" class="text-xl font-bold transition-colors duration-700">
+            Atlassian MCP
+          </h2>
+          <p class="text-sm theme-text-muted">Internal · no public repo</p>
+          <p class="mt-2 theme-text-secondary transition-colors duration-700">
+            AI coding assistants needed governed access to Jira, Confluence, and Zephyr — without a public surface or stored secrets.
+          </p>
+          <p class="mt-2 flex flex-wrap" role="list" aria-label="Stack">
+            <span class="skill-chip theme-skill" role="listitem">Go</span>
+            <span class="skill-chip theme-skill" role="listitem">MCP</span>
+            <span class="skill-chip theme-skill" role="listitem">Jira</span>
+            <span class="skill-chip theme-skill" role="listitem">Confluence</span>
+            <span class="skill-chip theme-skill" role="listitem">Zephyr</span>
+          </p>
+          <p class="mt-3 theme-text-secondary transition-colors duration-700 leading-relaxed">
+            Shipped a Go MCP server exposing ~60 tools to AI coding assistants (VS Code / IntelliJ). Prototype to a governed deployed internal tool in 12 months. No public repo, no public URL, and no stored secrets.
+          </p>
+        </article>
+
+        <article class="case-study" id="avrnpo" aria-labelledby="avrnpo-heading">
           <figure class="mb-4">
             <img
               class="case-shot"
@@ -201,7 +257,7 @@
           </p>
         </article>
 
-        <article class="case-study" aria-labelledby="sound-cistern-heading">
+        <article class="case-study" id="sound-cistern" aria-labelledby="sound-cistern-heading">
           <figure class="mb-4">
             <img
               class="case-shot"
@@ -236,34 +292,38 @@
           </p>
         </article>
 
-        <article class="case-study" aria-labelledby="media-manager-heading">
+        <article class="case-study" id="media-manager" aria-labelledby="media-manager-heading">
           <figure class="mb-4">
             <img
               class="case-shot"
               src="/static/projects/media-manager.png"
-              alt="Placeholder card for media-manager desktop Fyne app — see the GitHub repo for screenshots"
+              alt="Placeholder card for media-manager. Screenshots of the desktop app and web UI are in the GitHub repo."
               width="960"
               height="540"
               loading="lazy"
             />
             <figcaption class="mt-2 text-sm theme-text-muted">
-              Desktop Fyne app — see repo for screenshots
+              Placeholder only — screenshots of the desktop app and web UI are in the repo, not on this page
             </figcaption>
           </figure>
           <h2 id="media-manager-heading" class="text-xl font-bold transition-colors duration-700">
             media-manager
           </h2>
           <p class="theme-text-secondary transition-colors duration-700">
-            Browse, tag, and preview a local media library; optional headless service for Jackett, torrents, and Jellyfin.
+            Local-first media library: a Fyne desktop app to browse, tag, and preview, plus a Go web server for download management.
           </p>
           <p class="mt-2 flex flex-wrap" role="list" aria-label="Stack">
             <span class="skill-chip theme-skill" role="listitem">Go</span>
             <span class="skill-chip theme-skill" role="listitem">Fyne</span>
             <span class="skill-chip theme-skill" role="listitem">SQLite (GORM)</span>
             <span class="skill-chip theme-skill" role="listitem">FFmpeg</span>
+            <span class="skill-chip theme-skill" role="listitem">HTTP / React web UI</span>
+            <span class="skill-chip theme-skill" role="listitem">Jackett</span>
+            <span class="skill-chip theme-skill" role="listitem">Transmission</span>
+            <span class="skill-chip theme-skill" role="listitem">Jellyfin</span>
           </p>
           <p class="mt-3 theme-text-secondary transition-colors duration-700 leading-relaxed">
-            Desktop Go/Fyne app plus an optional download service. Early test coverage is thin — the README notes there is not a meaningful suite yet.
+            The desktop app scans a local library, tags files, and builds FFmpeg thumbnails and hover previews. Service mode runs an HTTP server and React web UI for the library and downloads: Jackett search, torrent tasks (Transmission), download rules, RSS feeds, and Jellyfin refresh. No public site. The README notes there is not a meaningful test suite yet.
           </p>
           <p class="mt-3 text-sm theme-text-muted flex flex-wrap gap-x-3 gap-y-1">
             <a class="theme-link underline font-medium" href="https://github.com/jbhicks/media-manager" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>

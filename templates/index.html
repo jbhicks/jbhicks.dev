@@ -4,59 +4,52 @@
     <meta charset="utf-8" />
     <title>Joshua Hicks — jbhicks.dev</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Joshua Hicks — Sr Manager, Software Development and full-stack technical lead in Phoenix. Selected work: clai, avrnpo.org, sound-cistern, and media-manager." />
     <link href="/static/tailwind.css" rel="stylesheet" type="text/css" />
     <link href="/static/daisyui.min.css" rel="stylesheet" type="text/css" />
     <script src="/static/htmx.min.js"></script>
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
-    
+
     <style>
       :root {
-        --bg-gradient-from: #f1f5f9;
-        --bg-gradient-via: #e2e8f0;
-        --bg-gradient-to: #cbd5e1;
+        --bg-paper: #fafaf7;
         --text-primary: #1e293b;
         --text-secondary: #475569;
         --text-muted: #64748b;
         --accent-1: #047857;
-        --accent-2: #0f766e;
-        --accent-3: #64748b;
-        --pin-color-1: #ef4444;
-        --pin-color-2: #dc2626;
-        --pulse-color: #ef4444;
-        --grid-opacity: 0.03;
-        --road-opacity: 0.04;
-        --card-bg: rgba(255, 255, 255, 0.8);
-        --card-border: #cbd5e1;
-        --toggle-bg: rgba(255, 255, 255, 0.8);
-        --toggle-border: #cbd5e1;
+        --card-bg: #ffffff;
+        --card-border: #e5e5e0;
+        --toggle-bg: rgba(255, 255, 255, 0.9);
+        --toggle-border: #e5e5e0;
+        --link-color: #047857;
+        --skill-bg: #f0f0eb;
+        --skill-text: #1e293b;
+        --rule-color: #e5e5e0;
+        --section-underline: #047857;
       }
-      
+
       [data-theme="dark"] {
-        --bg-gradient-from: #111827;
-        --bg-gradient-via: #1f2937;
-        --bg-gradient-to: #374151;
+        --bg-paper: #0b0b0b;
         --text-primary: #f9fafb;
         --text-secondary: #e5e7eb;
         --text-muted: #9ca3af;
         --accent-1: #34d399;
-        --accent-2: #6ee7b7;
-        --accent-3: #94a3b8;
-        --pin-color-1: #f97316;
-        --pin-color-2: #ea580c;
-        --pulse-color: #f97316;
-        --grid-opacity: 0.08;
-        --road-opacity: 0.06;
-        --card-bg: rgba(17, 24, 39, 0.8);
-        --card-border: #374151;
-        --toggle-bg: rgba(31, 41, 55, 0.8);
-        --toggle-border: #4b5563;
+        --card-bg: #141414;
+        --card-border: #2a2a2a;
+        --toggle-bg: rgba(31, 41, 55, 0.9);
+        --toggle-border: #374151;
+        --link-color: #6ee7b7;
+        --skill-bg: #1f1f1f;
+        --skill-text: #f9fafb;
+        --rule-color: #2a2a2a;
+        --section-underline: #34d399;
       }
-      
+
       body {
-        background: linear-gradient(to bottom right, var(--bg-gradient-from), var(--bg-gradient-via), var(--bg-gradient-to));
+        background: var(--bg-paper);
         min-height: 100vh;
       }
-      
+
       .theme-text-primary { color: var(--text-primary); }
       .theme-text-secondary { color: var(--text-secondary); }
       .theme-text-muted { color: var(--text-muted); }
@@ -65,96 +58,83 @@
       .theme-card-border { border-color: var(--card-border); }
       .theme-toggle-bg { background-color: var(--toggle-bg); }
       .theme-toggle-border { border-color: var(--toggle-border); }
+      .theme-link { color: var(--link-color); }
 
-      @media (prefers-reduced-motion: reduce) {
-        .pin-bounce {
-          animation: none !important;
+      .locale-cue {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .proof-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      @media (min-width: 768px) {
+        .proof-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
+      }
+
+      .proof-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        border: 1px solid var(--card-border);
+        background: var(--card-bg);
+        border-radius: 0.75rem;
+        padding: 1.1rem 1.15rem 1rem;
+        box-shadow: none;
+      }
+
+      .proof-card h3 {
+        color: var(--text-primary);
+        padding-bottom: 0.2rem;
+        border-bottom: 2px solid var(--section-underline);
+        display: inline-block;
+        margin-bottom: 0.55rem;
+      }
+
+      .proof-card h3 a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .proof-card h3 a:hover,
+      .proof-card h3 a:focus-visible {
+        text-decoration: underline;
+      }
+
+      .proof-links {
+        margin-top: auto;
+        padding-top: 0.85rem;
       }
     </style>
   </head>
 
-  <body class="relative overflow-x-hidden transition-all duration-700">
-    <!-- Theme-based map background -->
-    <div class="fixed inset-0 z-0 pointer-events-none">
-      <!-- Map grid pattern - city blocks -->
-      <div id="map-grid" class="absolute inset-0" style="opacity: var(--grid-opacity);">
-        <div class="absolute inset-0" style="background-image: radial-gradient(circle, currentColor 1px, transparent 1px); background-size: 24px 24px;"></div>
-      </div>
-      
-      <!-- Road lines - subtle grid -->
-      <div id="road-grid" class="absolute inset-0" style="opacity: var(--road-opacity);">
-        <div class="absolute inset-0" style="background-image: linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px); background-size: 80px 80px;"></div>
-      </div>
-      
-      <!-- Location Pin Container -->
-      <div class="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <!-- Pin shadow -->
-        <div class="absolute top-[42px] left-1/2 transform -translate-x-1/2 w-6 h-2 bg-black/20 rounded-full blur-sm transition-opacity duration-700" style="opacity: 0.3;"></div>
-        
-        <!-- Pin SVG -->
-        <svg width="48" height="60" viewBox="0 0 48 60" class="drop-shadow-2xl pin-bounce animate-bounce" style="animation-duration: 2s;">
-          <defs>
-            <linearGradient id="pinGradientLight" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color: #ef4444"/>
-              <stop offset="100%" style="stop-color: #dc2626"/>
-            </linearGradient>
-            <linearGradient id="pinGradientDark" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color: #f97316"/>
-              <stop offset="100%" style="stop-color: #ea580c"/>
-            </linearGradient>
-          </defs>
-          <path d="M24 0C10.745 0 0 10.745 0 24c0 18 24 36 24 36s24-18 24-36C48 10.745 37.255 0 24 0z" class="pin-path transition-all duration-700" fill="url(#pinGradientDark)"/>
-          <circle cx="24" cy="24" r="10" fill="white"/>
-          <circle cx="24" cy="24" r="6" fill="#1f2937" class="pin-center transition-fill duration-700"/>
-        </svg>
-      </div>
-      
-      <!-- Location label -->
-      <div class="absolute top-[40%] left-1/2 transform -translate-x-1/2 mt-4">
-        <div class="backdrop-blur-sm px-4 py-2 rounded-full border shadow-lg transition-all duration-700 theme-card-bg theme-card-border">
-          <span class="font-mono text-xs tracking-wider uppercase transition-colors duration-700 theme-text-secondary">
-            <span class="transition-colors duration-700 theme-accent-1">📍</span> Phoenix, AZ
-          </span>
-        </div>
-      </div>
-      
-      <!-- Decorative coordinates -->
-      <div class="absolute bottom-8 left-8 font-mono text-[10px] tracking-widest transition-colors duration-700 theme-text-muted">
-        33.4484° N, 112.0740° W
-      </div>
-    </div>
-    
-    <!-- Theme Toggle Button -->
-    <button id="theme-toggle" class="fixed top-4 right-4 z-50 p-3 rounded-full backdrop-blur-sm border shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl theme-toggle-bg theme-toggle-border" aria-label="Toggle color theme">
+  <body class="relative overflow-x-hidden">
+    <button
+      id="theme-toggle"
+      class="fixed top-4 right-4 z-50 p-3 rounded-full backdrop-blur-sm border shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl theme-toggle-bg theme-toggle-border"
+      aria-label="Toggle color theme"
+    >
       <svg id="sun-icon" class="w-5 h-5 text-amber-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
       </svg>
       <svg id="moon-icon" class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 24.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
       </svg>
     </button>
 
     <script>
-      // Theme toggle functionality
       const themeToggle = document.getElementById('theme-toggle');
       const sunIcon = document.getElementById('sun-icon');
       const moonIcon = document.getElementById('moon-icon');
-      const pinPath = document.querySelector('.pin-path');
-      const pinCenter = document.querySelector('.pin-center');
-      
-      // Check for saved theme preference or default to dark
       const savedTheme = localStorage.getItem('theme') || 'dark';
-      
-      function updatePinColors(isDark) {
-        if (pinPath) {
-          pinPath.setAttribute('fill', isDark ? 'url(#pinGradientDark)' : 'url(#pinGradientLight)');
-        }
-        if (pinCenter) {
-          pinCenter.setAttribute('fill', isDark ? 'white' : '#1f2937');
-        }
-      }
-      
+
       function updateThemeIcon(isDark) {
         if (isDark) {
           sunIcon.classList.remove('hidden');
@@ -164,96 +144,112 @@
           moonIcon.classList.remove('hidden');
         }
       }
-      
+
       function setTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
-        const isDark = theme === 'dark';
-        updateThemeIcon(isDark);
-        updatePinColors(isDark);
+        updateThemeIcon(theme === 'dark');
         localStorage.setItem('theme', theme);
       }
-      
-      // Initialize theme
+
       setTheme(savedTheme);
-      
-      // Toggle theme on button click
+
       themeToggle.addEventListener('click', () => {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         setTheme(currentTheme === 'dark' ? 'light' : 'dark');
       });
     </script>
 
-    <!-- Load the nav bar template using HTMX -->
     <div
       hx-get="/templates/nav-bar.html"
       hx-trigger="load"
       hx-swap="innerHTML"
     ></div>
 
-    <header class="container mx-auto px-4 pt-8 pb-6 relative z-10 max-w-4xl">
-      <h1 class="text-3xl md:text-4xl font-bold theme-text-primary">Joshua Hicks</h1>
+    <header class="container mx-auto px-4 pt-8 pb-2 relative z-10 max-w-5xl">
+      <p class="locale-cue theme-text-muted">Phoenix, AZ</p>
+      <h1 class="mt-2 text-3xl md:text-4xl font-bold theme-text-primary">Joshua Hicks</h1>
       <p class="mt-3 text-lg leading-relaxed theme-text-secondary" style="font-size: 1.125rem;">
-        Go engineer in Phoenix. I ship production systems for veterans and media — and enterprise platform / AI tooling at work.
+        Sr Manager, Software Development and full-stack technical lead (IC track) in Phoenix — Java/Spring, Go, TypeScript, and Kubernetes, with a decade of enterprise BPM (Pega CSSA) behind the platform work. I ship enterprise platform and AI developer tooling at Charles Schwab, plus production Go for veterans and media.
       </p>
-      <p class="mt-3 text-sm theme-text-muted flex flex-wrap gap-x-3 gap-y-1">
-        <a class="theme-accent-1 underline" href="/about">Resume</a>
-        <a class="theme-accent-1 underline" href="/projects">Projects</a>
-        <a class="theme-accent-1 underline select-all" href="mailto:joshua.brock.hicks@gmail.com">joshua.brock.hicks@gmail.com</a>
-        <a class="theme-accent-1 underline" href="https://github.com/jbhicks" target="_blank" rel="noopener noreferrer">github.com/jbhicks ↗</a>
-      </p>
+      <nav class="mt-3 text-sm theme-text-muted" aria-label="Identity">
+        <ul class="flex flex-wrap gap-x-3 gap-y-1 list-none p-0 m-0">
+          <li><a class="theme-accent-1 underline" href="/about">About</a></li>
+          <li><a class="theme-accent-1 underline" href="/projects">Projects</a></li>
+          <li><a class="theme-accent-1 underline" href="https://github.com/jbhicks" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></li>
+          <li><a class="theme-accent-1 underline" href="https://www.linkedin.com/in/joshuabhicks" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a></li>
+          <li><a class="theme-accent-1 underline select-all" href="mailto:joshua.brock.hicks@gmail.com">joshua.brock.hicks@gmail.com</a></li>
+        </ul>
+      </nav>
     </header>
 
-    <div class="container mx-auto px-2 relative z-10">
-      <h2 class="text-center text-2xl md:text-3xl font-bold mb-1 transition-colors duration-700 theme-text-primary">Development Dashboard</h2>
-      <p class="text-center text-sm mb-4 transition-colors duration-700 theme-text-muted">
-        Live SoundCloud feed and headlines I actually read — running on this Go site.
-      </p>
-
-      <!-- Adjusted two columns with reduced gap -->
-      <div class="flex flex-col lg:flex-row items-stretch gap-2">
-        <!-- Soundcloud Mixes Column with reduced padding -->
-        <section class="flex-1 rounded-box bg-base-200 p-2" aria-labelledby="mixes-heading">
-          <h3 id="mixes-heading" class="text-2xl font-bold mb-1">Soundcloud Mixes</h3>
-          <p class="text-sm mb-2 theme-text-muted">My SoundCloud stream and likes, loaded live.</p>
-          <!-- Sub-tabs for Mixes remain as tabs -->
-          <div class="tabs tabs-lifted">
-            <a role="tab" class="tab tab-bordered tab-active" data-sub-tab="stream">Stream</a>
-            <a role="tab" class="tab tab-bordered" data-sub-tab="favorites">Favorites</a>
-          </div>
-          
-          <!-- Sub-tab content panels -->
-          <div id="stream" class="sub-tab-panel mt-4">
-            <div class="overflow-y-auto" hx-get="/api/soundcloud/stream" hx-trigger="load" hx-swap="innerHTML"></div>
-          </div>
-          <div id="favorites" class="sub-tab-panel hidden mt-4">
-            <div class="overflow-y-auto" hx-get="/api/soundcloud/favorites" hx-trigger="load" hx-swap="innerHTML"></div>
-          </div>
-        </section>
-
-        <!-- Vertical Divider using DaisyUI remains unchanged -->
-        <div class="divider divider-vertical lg:divider-horizontal"></div>
-
-        <!-- News Column with reduced padding -->
-        <section class="flex-1 rounded-box bg-base-200 p-2" aria-labelledby="news-heading">
-          <h3 id="news-heading" class="text-2xl font-bold mb-1">News</h3>
-          <p class="text-sm mb-2 theme-text-muted">Headlines I actually read.</p>
-          <div class="overflow-y-auto" hx-get="/api/news" hx-trigger="load" hx-swap="innerHTML"></div>
-        </section>
-      </div>
-    </div>
-
-    <!-- Remove primary tab switching script. Retain sub-tab switching script for Mixes only -->
-    <script>
-      // Sub-tabs switching within the Mixes column
-      document.querySelectorAll('[data-sub-tab]').forEach(tab => {
-        tab.addEventListener('click', () => {
-          document.querySelectorAll('[data-sub-tab]').forEach(t => t.classList.remove('tab-active'));
-          tab.classList.add('tab-active');
-          const target = tab.getAttribute('data-sub-tab');
-          document.querySelectorAll('.sub-tab-panel').forEach(panel => panel.classList.add('hidden'));
-          document.getElementById(target).classList.remove('hidden');
-        });
-      });
-    </script>
+    <main class="container mx-auto px-4 pt-6 pb-12 relative z-10 max-w-5xl">
+      <section aria-labelledby="proof-heading">
+        <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-4">
+          <h2 id="proof-heading" class="text-xl md:text-2xl font-bold theme-text-primary">Selected work</h2>
+          <a class="theme-link underline text-sm" href="/projects">All case studies</a>
+        </div>
+        <ul class="proof-grid list-none p-0 m-0">
+          <li>
+            <article class="proof-card" aria-labelledby="home-clai">
+              <h3 id="home-clai" class="text-lg font-bold">
+                <a href="/projects#clai">clai</a>
+              </h3>
+              <p class="text-sm theme-text-muted">Open source · Go</p>
+              <p class="mt-2 theme-text-secondary leading-relaxed">
+                Local-first Go AI chat client for llama.cpp, with a Bubble Tea TUI and optional HTTP service/web UI for model management and benchmarking.
+              </p>
+              <p class="proof-links text-sm flex flex-wrap gap-x-3 gap-y-1">
+                <a class="theme-link underline font-medium" href="/projects#clai">Case study</a>
+                <a class="theme-link underline font-medium" href="https://github.com/jbhicks/clai" target="_blank" rel="noopener noreferrer">Source <span aria-hidden="true">↗</span></a>
+              </p>
+            </article>
+          </li>
+          <li>
+            <article class="proof-card" aria-labelledby="home-avrnpo">
+              <h3 id="home-avrnpo" class="text-lg font-bold">
+                <a href="/projects#avrnpo">avrnpo.org</a>
+              </h3>
+              <p class="theme-text-secondary leading-relaxed">
+                Nonprofit site and Helcim donations for American Veterans Rebuilding.
+              </p>
+              <p class="proof-links text-sm flex flex-wrap gap-x-3 gap-y-1">
+                <a class="theme-link underline font-medium" href="/projects#avrnpo">Case study</a>
+                <a class="theme-link underline font-medium" href="https://avrnpo.org" target="_blank" rel="noopener noreferrer">Live <span aria-hidden="true">↗</span></a>
+                <a class="theme-link underline font-medium" href="https://github.com/jbhicks/avrnpo.org" target="_blank" rel="noopener noreferrer">Source <span aria-hidden="true">↗</span></a>
+              </p>
+            </article>
+          </li>
+          <li>
+            <article class="proof-card" aria-labelledby="home-sound-cistern">
+              <h3 id="home-sound-cistern" class="text-lg font-bold">
+                <a href="/projects#sound-cistern">sound-cistern</a>
+              </h3>
+              <p class="theme-text-secondary leading-relaxed">
+                SoundCloud feed filter — favorites, sort, search, and genre.
+              </p>
+              <p class="proof-links text-sm flex flex-wrap gap-x-3 gap-y-1">
+                <a class="theme-link underline font-medium" href="/projects#sound-cistern">Case study</a>
+                <a class="theme-link underline font-medium" href="https://soundcistern.com" target="_blank" rel="noopener noreferrer">Live <span aria-hidden="true">↗</span></a>
+                <a class="theme-link underline font-medium" href="https://github.com/jbhicks/sound-cistern" target="_blank" rel="noopener noreferrer">Source <span aria-hidden="true">↗</span></a>
+              </p>
+            </article>
+          </li>
+          <li>
+            <article class="proof-card" aria-labelledby="home-media-manager">
+              <h3 id="home-media-manager" class="text-lg font-bold">
+                <a href="/projects#media-manager">media-manager</a>
+              </h3>
+              <p class="theme-text-secondary leading-relaxed">
+                Local-first Go media stack: a Fyne desktop app to browse, tag, and preview, and a web server for library and download management (Jackett, torrents, Jellyfin). No public site — source only.
+              </p>
+              <p class="proof-links text-sm flex flex-wrap gap-x-3 gap-y-1">
+                <a class="theme-link underline font-medium" href="/projects#media-manager">Case study</a>
+                <a class="theme-link underline font-medium" href="https://github.com/jbhicks/media-manager" target="_blank" rel="noopener noreferrer">Source <span aria-hidden="true">↗</span></a>
+              </p>
+            </article>
+          </li>
+        </ul>
+      </section>
+    </main>
   </body>
 </html>
